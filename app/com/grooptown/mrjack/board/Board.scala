@@ -4,11 +4,13 @@ import com.grooptown.mrjack.board.Cell.CELL_WIDTH
 import com.grooptown.mrjack.board.DetectiveName.DetectiveName
 import com.grooptown.mrjack.board.Orientation.{EAST, NORTH, SOUTH, WEST}
 import com.grooptown.mrjack.game.Position
+import com.grooptown.mrjack.players
 import com.grooptown.mrjack.players.AlibiName
-import com.grooptown.mrjack.players.AlibiName.AlibiName
+import com.grooptown.mrjack.players.AlibiName.{AlibiName, LESTRADE}
 
 import scala.Array.ofDim
 import scala.Option._
+import scala.collection.{immutable, mutable}
 import scala.collection.mutable.ListBuffer
 import scala.util.Random
 import scala.util.control.Breaks.{break, breakable}
@@ -34,14 +36,22 @@ class Board {
       cells(line)(col) = Cell(apply(ListBuffer()), empty)
     }
 
-    val alibis = Random.shuffle(AlibiName.values.toList).iterator
+    val alibis = Random.shuffle(AlibiName.values.toList).toIterator
 
     cells(1)(0) = Cell(apply(ListBuffer(DetectiveToken(DetectiveName.SHERLOCK))), empty)
     cells(1)(4) = Cell(apply(ListBuffer(DetectiveToken(DetectiveName.WATSON))), empty)
     cells(4)(2) = Cell(apply(ListBuffer(DetectiveToken(DetectiveName.TOBBY))), empty)
     List(1, 2, 3).foreach(line => {
       List(1, 2, 3).foreach(col => {
-        cells(line)(col) = getNewDistrict(alibis.next())
+        if (line == 2 && col == 2) {
+          cells(line)(col) = getNewDistrict(LESTRADE)
+        } else {
+          var alibi = alibis.next()
+          if (alibi.equals(LESTRADE)) {
+            alibi = alibis.next()
+          }
+          cells(line)(col) = getNewDistrict(alibi)
+        }
       })
     })
     cells(1)(1).district.get.orientation = EAST

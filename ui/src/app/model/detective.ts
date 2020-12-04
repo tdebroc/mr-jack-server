@@ -1,0 +1,3 @@
+class Detective {
+  name: string = ""
+}

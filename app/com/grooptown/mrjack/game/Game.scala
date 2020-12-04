@@ -1,10 +1,15 @@
 package com.grooptown.mrjack.game
 
+import java.util
+import java.util.UUID.randomUUID
+
 import com.grooptown.mrjack.actions.tokens._
 import com.grooptown.mrjack.actions.{ActionDetails, ActionService}
 import com.grooptown.mrjack.board.Board
+import com.grooptown.mrjack.players.AlibiName.AlibiName
 import com.grooptown.mrjack.players._
 
+import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
@@ -16,12 +21,19 @@ case class Game() {
   val actionTokens: mutable.ListBuffer[ActionToken] = initActionsToken()
   val detectivePlayer: DetectivePlayer = DetectivePlayer()
   val mrJackPlayer: MrJackPlayer = MrJackPlayer(pickAlibiCard())
+  var winner: Option[Player] = Option.empty
+  val secrets: util.Map[String, PlayerSecret] = new util.HashMap[String, PlayerSecret]
 
   def initActionsToken(): ListBuffer[ActionToken] = ListBuffer(new JokerRotateToken, new SherlockAlibiToken, new SwapRotateToken, new WatsonTobbyToken)
 
   def initTurnTokens(): ListBuffer[TurnToken] = ListBuffer.fill(MAX_TURN)(new TurnToken)
 
   def initAlibiCards(): ListBuffer[AlibiCard] = AlibiCard.initAlibiCards
+
+  def initGame(): Unit = {
+    if (isEvenTurn) detectivePlayer.launchTokenAction(this) else mrJackPlayer.swapActionsToken(this)
+    initTurn()
+  }
 
   def playGame(): Unit = {
     board.printBoard()
@@ -37,7 +49,7 @@ case class Game() {
 
   def isEvenTurn: Boolean = turnTokens.length % 2 == 0
 
-  def turnNumber: Int = turnTokens.length
+  def getTurnNumber: Int = Math.abs(turnTokens.length - MAX_TURN)
 
   def countUnusedToken(): Int = actionTokens.count(!_.isUsed)
 
@@ -46,8 +58,8 @@ case class Game() {
 
   def getCurrentPlayer: Player = if (isDetectiveCurrentPlayer) detectivePlayer else mrJackPlayer
 
-  def checkIfMrJackVisible : Boolean = {
-    val visibleCells =  board.calculateVisibleCellsFromAllDetective
+  def checkIfMrJackVisible: Boolean = {
+    val visibleCells = board.calculateVisibleCellsFromAllDetective
     visibleCells.exists(_.district.get.name == mrJackPlayer.alibiCard.name)
   }
 
@@ -57,9 +69,40 @@ case class Game() {
   // = Getters for front
   // ===================================================================================================
   def getBoard: Board = board
+
   def getDetectivePlayer: DetectivePlayer = detectivePlayer
+
   def getMrJack: MrJackPlayer = mrJackPlayer
+
   def getActionTokens: Array[ActionToken] = actionTokens.toArray
+
+  def getWinner: String = if (winner.isDefined) winner.get.printName else null
+
+  // ===================================================================================================
+  // = Multiplayer
+  // ===================================================================================================
+
+  def registerPlayer(pseudo: String, isMrJack: Boolean): String = {
+    val uuid = randomUUID().toString
+    secrets.put(uuid, PlayerSecret(pseudo, isMrJack, this))
+    uuid
+  }
+
+  def isMrJackRegistered: Boolean = {
+    secrets.values().asScala.exists(_.isMrJack)
+  }
+
+  def isDetectiveRegistered: Boolean = {
+    secrets.values().asScala.exists(!_.isMrJack)
+  }
+
+  def getPlayerSecret(secretId: String): PlayerSecret = secrets.get(secretId)
+
+  def isAuthorizedToPlay(secretId: String): Boolean = {
+    if (!secrets.containsKey(secretId)) return false
+    val secret = secrets.get(secretId)
+    secret.isMrJack && !isDetectiveCurrentPlayer || !secret.isMrJack && isDetectiveCurrentPlayer
+  }
 
   // ===================================================================================================
   // = One Turn
@@ -74,12 +117,23 @@ case class Game() {
     println("⏳ Playing Turn " + (MAX_TURN - turnTokens.length + 1) + "")
     initTurn()
     if (isEvenTurn) detectivePlayer.launchTokenAction(this) else mrJackPlayer.swapActionsToken(this)
-    1 to 4 foreach { _ => playAction() }
-    witnessCall()
+    1 to 4 foreach { _ => playActionWithKeyboard() }
+    witnessCall(mrJackPlayer.alibiCard.name)
   }
 
-  def playAction(): Unit = {
-    val action = askActionFromUserKeyboard
+  def handleActionPlayed() {
+    if (countUnusedToken() != 0) return
+    witnessCall(mrJackPlayer.alibiCard.name)
+    if (isEvenTurn) detectivePlayer.launchTokenAction(this) else mrJackPlayer.swapActionsToken(this)
+    winner = findWinner()
+    initTurn()
+  }
+
+  def playActionWithKeyboard(): Unit = {
+    playAction(askActionFromUserKeyboard)
+  }
+
+  def playAction(action: ActionDetails): Unit = {
     action.action.playAction(action.actionInput, this)
     action.actionToken.isUsed = true
   }
@@ -105,9 +159,10 @@ case class Game() {
       .foreach(t => println(" - " + t._2 + " : " + t._1.getClass.getSimpleName))
   }
 
-  def witnessCall(): Unit = {
-    val visibleCells =  board.calculateVisibleCellsFromAllDetective
-    val isMrJackVisible = visibleCells.exists(_.district.get.name == mrJackPlayer.alibiCard.name)
+  def witnessCall(mrJackName: AlibiName): Unit = {
+    val visibleCells = board.calculateVisibleCellsFromAllDetective
+    println(visibleCells.map(c => c.forPrinting(true)).mkString("Array(", ", ", ")"))
+    val isMrJackVisible = visibleCells.exists(_.district.get.name == mrJackName)
     if (isMrJackVisible) {
       detectivePlayer.turnTokens += turnTokens.remove(0)
       board.getNonVisibleDistrictsFromVisibleCells(visibleCells).foreach(_.isRecto = false)
@@ -121,7 +176,7 @@ case class Game() {
   // = End
   // ===================================================================================================
 
-  def findWinner() : Option[Player] = {
+  def findWinner(): Option[Player] = {
     if (timeEnded() && !checkIfMrJackVisible) return Option.apply(mrJackPlayer)
     if (haveBothObjective && checkIfMrJackVisible) return Option.apply(detectivePlayer)
     if (mrJackHasReachObjectives) return Option.apply(mrJackPlayer)
@@ -139,7 +194,7 @@ case class Game() {
 
   def mrJackHasReachObjectives: Boolean = mrJackPlayer.hasReachObjective(this)
 
-  def printWinner() : Unit = {
+  def printWinner(): Unit = {
     println("\uD83C\uDF86 \uD83C\uDF86 \uD83C\uDF86 \uD83C\uDF86 \uD83C\uDF86 \uD83C\uDF86")
     println("And the Winner is .... " + findWinner().get.printName + " : Congrats ! ")
     println("\uD83C\uDF86 \uD83C\uDF86 \uD83C\uDF86 \uD83C\uDF86 \uD83C\uDF86 \uD83C\uDF86")

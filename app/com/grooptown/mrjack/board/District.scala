@@ -11,6 +11,9 @@ case class District(name: AlibiName,
   var isCross: Boolean = false
   var isAlreadyRotated: Boolean = false
 
+  def getOrientationAsString: String = orientation.toString
+  def getAlibiNameAsString: String = name.toString
+
   def forPrinting(): Array[Array[Char]] = {
     val chars = getEmptyCell
     chars(0)(0) = '█'

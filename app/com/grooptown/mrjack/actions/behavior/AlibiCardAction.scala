@@ -1,5 +1,6 @@
 package com.grooptown.mrjack.actions.behavior
 
+import com.grooptown.mrjack.actions.exceptions.WrongInputException
 import com.grooptown.mrjack.actions.input.ActionInput
 import com.grooptown.mrjack.game.Game
 
@@ -11,10 +12,10 @@ object AlibiCardAction extends Action {
   override def generatePossibleInputString: Array[String] = Array("")
 
   override def playAction(actionInput: ActionInput, game: Game): Unit = {
+    val cardPicked = game.pickAlibiCard()
+    game.getCurrentPlayer.alibiCards += cardPicked
     if (game.isDetectiveCurrentPlayer) {
-      game.board.innocentAlibi(game.pickAlibiCard().name)
-    } else {
-      game.getCurrentPlayer.alibiCards += game.pickAlibiCard()
+      game.board.innocentAlibi(cardPicked.name)
     }
   }
 }

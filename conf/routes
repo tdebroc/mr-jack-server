@@ -3,10 +3,19 @@
 # ~~~~
 
 # Serve index page from public directory
-GET     /                           controllers.FrontendController.index()
+GET  /                               controllers.FrontendController.index()
 
-GET     /game                controllers.GameController.getGame
+POST /game                           controllers.GameController.createGame
 
+GET  /games                          controllers.GameController.getGames
+
+GET  /game/:gameId                   controllers.GameController.getGame(gameId: String)
+
+GET  /game/:gameId/secret            controllers.GameController.getSecret(gameId: String, secretId: String)
+
+POST /playAction                     controllers.GameController.playAction(secretId: String)
+
+POST /register                       controllers.GameController.registerToGame
 
 # Serve static assets under public directory
 GET     /*file                      controllers.FrontendController.assetOrDefault(file)

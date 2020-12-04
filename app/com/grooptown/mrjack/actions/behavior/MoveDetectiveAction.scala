@@ -10,13 +10,14 @@ import scala.collection.mutable
 
 trait MoveDetectiveAction extends Action {
   override def getInputFromString(moveCount: String): ActionInput = {
-    if (moveCount.length == 0 || !moveCount.charAt(0).isDigit) throw WrongInputException("You should enter a valid digit")
+    if (moveCount.isEmpty || !moveCount.charAt(0).isDigit) throw WrongInputException("You should enter a valid digit")
     MoveDetectiveInput(getDetective, moveCount.charAt(0).asDigit)
   }
 
   override def isValidAction(actionInput: ActionInput, game: Game): Boolean = {
     val moveDetectiveInput = actionInput.asInstanceOf[MoveDetectiveInput]
-    moveDetectiveInput.moveCount > 0 && moveDetectiveInput.moveCount <= 2
+    if (moveDetectiveInput.moveCount > 0 && moveDetectiveInput.moveCount <= 2) true
+    else throw WrongInputException("Your move should be between 1 and 2")
   }
 
   override def generatePossibleInputString: Array[String] = Array("1", "2")

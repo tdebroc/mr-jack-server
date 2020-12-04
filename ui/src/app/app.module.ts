@@ -3,31 +3,23 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HTTP_INTERCEPTORS, HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 
-import { AppComponent } from './app.component';
-import { RouteExampleComponent } from './route-example/route-example.component';
+import { AppComponent } from './app/app.component';
 
-import { AppService } from './app.service';
 import { AppHttpInterceptorService } from './http-interceptor.service';
+import { HomeComponent } from './home/home.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatCardModule} from "@angular/material/card";
+import {MatButtonModule} from "@angular/material/button";
 
 const routes: Routes = [
   {
-    path: 'scala',
-    component: RouteExampleComponent,
+    path: '',
+    component: HomeComponent,
     data: { technology: 'Scala' }
   },
   {
-    path: 'play',
-    component: RouteExampleComponent,
-    data: { technology: 'Play' }
-  },
-  {
-    path: 'angular',
-    component: RouteExampleComponent,
-    data: { technology: 'Angular' }
-  },
-  {
     path: '**',
-    redirectTo: '/play',
+    redirectTo: '/',
     pathMatch: 'full'
   }
 ];
@@ -35,7 +27,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    RouteExampleComponent
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -44,10 +36,12 @@ const routes: Routes = [
       cookieName: 'Csrf-Token',
       headerName: 'Csrf-Token',
     }),
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    BrowserAnimationsModule,
+    MatCardModule,
+    MatButtonModule
   ],
   providers: [
-    AppService,
     {
       multi: true,
       provide: HTTP_INTERCEPTORS,

@@ -2,6 +2,7 @@ package com.grooptown.mrjack.players
 
 import com.grooptown.mrjack.game.Game
 
+import scala.collection.mutable
 import scala.util.Random
 
 case class DetectivePlayer() extends Player {
@@ -13,5 +14,7 @@ case class DetectivePlayer() extends Player {
       game.board.getDistricts.count(_.isRecto) == 1
   }
 
+  def getAlibiCards: Array[String] = alibiCards.map(_.name.toString).toArray
+  
   override def printName: String =  "🕵 Detective "
 }

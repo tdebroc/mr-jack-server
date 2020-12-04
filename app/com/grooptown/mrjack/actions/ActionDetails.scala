@@ -6,6 +6,7 @@ import com.grooptown.mrjack.actions.tokens.ActionToken
 
 case class ActionDetails(
                           isValid: Boolean,
+                          errorMessage: String,
                           action: Action = null,
                           actionInput: ActionInput = null,
                           actionToken: ActionToken = null

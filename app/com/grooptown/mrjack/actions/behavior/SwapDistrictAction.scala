@@ -17,9 +17,10 @@ object SwapDistrictAction extends Action {
 
   override def isValidAction(actionInput: ActionInput, game: Game): Boolean = {
     val swapInput = actionInput.asInstanceOf[SwapDistrictInput]
-    swapInput.district1 != swapInput.district2 &&
+    if (swapInput.district1 != swapInput.district2 &&
       swapInput.district1 >= 0 && swapInput.district1 < 9 &&
-      swapInput.district2 >= 0 && swapInput.district2 < 9
+      swapInput.district2 >= 0 && swapInput.district2 < 9) true
+    else throw WrongInputException("Your district ID should be between 0 and 8 inclusive")
   }
 
   override def generatePossibleInputString: Array[String] = {

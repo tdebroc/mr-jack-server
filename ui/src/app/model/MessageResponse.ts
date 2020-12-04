@@ -1,0 +1,3 @@
+class MessageResponse {
+  message: string = ""
+}

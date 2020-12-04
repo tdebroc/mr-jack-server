@@ -20,7 +20,7 @@ export class AppHttpInterceptorService implements HttpInterceptor {
       .handle(req)
       .pipe(catchError(err => {
         if (err instanceof HttpErrorResponse) {
-          this.onError(err);
+          AppHttpInterceptorService.onError(err);
         }
         return throwError(err);
       }));
@@ -30,20 +30,20 @@ export class AppHttpInterceptorService implements HttpInterceptor {
    * Handle http errors.
    * @param response - ErrorResponse.
    */
-  private onError(response: HttpErrorResponse): void {
-    const clientErrorMessage = this.handleClientSideError(response.status);
+  private static onError(response: HttpErrorResponse): void {
+    const clientErrorMessage = AppHttpInterceptorService.handleClientSideError(response.status);
     if (clientErrorMessage) {
       // show client side error
       return;
     }
-
-    const serverErrorMessage = this.handleServerError(response.error);
+    alert("Error: " + response.error)
+    const serverErrorMessage = AppHttpInterceptorService.handleServerError(response.error);
     if (serverErrorMessage) {
       // show server error
     }
   }
 
-  private handleClientSideError(status: number): string | undefined {
+  private static handleClientSideError(status: number): string | undefined {
     switch (status) {
       case 0:
         return 'NO INTERNET CONNECTION';
@@ -54,7 +54,8 @@ export class AppHttpInterceptorService implements HttpInterceptor {
     }
   }
 
-  private handleServerError(errorResponse: any): string {
+  private static handleServerError(errorResponse: any): string {
+    console.log(errorResponse);
     // handle server error
     return '';
   }

@@ -1,0 +1,130 @@
+<div id="all-page">
+  <mat-card *ngIf="getGames()" id="game-list">
+    <a href="assets/pdf/MrJackPocket.pdf" target="_blank">Check Rules</a><br/>
+    <button mat-raised-button color="primary" (click)="createGame()">Create Game</button>
+    <div class="game-list">
+      <mat-card *ngFor="let game of getGames() | keyvalue" (click)="selectGame(game.key)" class="pointer game-item"
+                [ngClass]="{'selected' : isCurrentGameId(game)}">
+        {{game.key}}
+      </mat-card>
+    </div>
+
+  </mat-card>
+  <div id="current-game">
+    <div *ngIf="isCurrentGameDefined()" id="board">
+      <div *ngFor="let line of getCurrentGame().board.cells; let lineIndex = index" class="board-line">
+        <div *ngFor="let cell of line; let colIndex = index" class="board-cell"
+             [ngClass]="{'cell-district' : cell.districts}">
+          <div *ngIf="cell.detectives">
+            <img *ngFor="let detective of cell.detectives"
+                 class="detective-token"
+                 [ngClass]="{'detective-middle-vertical' : colIndex === 0 || colIndex === 4,
+                             'detective-middle-horizontal' : lineIndex === 0 || lineIndex === 4}"
+                 src="assets/images/tokens/{{detective.name}}.png" alt="{{detective.name}}"/>
+          </div>
+          <span *ngIf="getBonusDetective(lineIndex, colIndex)">
+            <img
+              class="bonus-detective-token pointer"
+              [ngClass]="{'detective-middle-vertical' : colIndex === 0 || colIndex === 4,
+                               'detective-middle-horizontal' : lineIndex === 0 || lineIndex === 4}"
+              src="assets/images/tokens/{{getBonusDetective(lineIndex, colIndex).name.toUpperCase()}}.png"
+              alt="{{getBonusDetective(lineIndex, colIndex).name.toUpperCase()}}"
+              (click)="playMoveDetective(getBonusDetective(lineIndex, colIndex))"/>
+          </span>
+
+          <img *ngIf="cell.districts" src="assets/images/district/{{getDistrictImageName(cell.districts)}}.png"
+               class="district orientation-{{cell.districts.orientationAsString}}"
+               [ngClass]="{'pointer' : isDistrictPointer()}"
+               [class.orientation-EAST-force]="isRotating('EAST', lineIndex, colIndex)"
+               [class.orientation-NORTH-force]="isRotating('NORTH', lineIndex, colIndex)"
+               [class.orientation-SOUTH-force]="isRotating('SOUTH', lineIndex, colIndex)"
+               [class.orientation-WEST-force]="isRotating('WEST', lineIndex, colIndex)"
+               (click)="clickOnDistrict(lineIndex, colIndex)"
+               alt="{{getDistrictImageName(cell.districts)}}"/>
+          <img *ngIf="isSelectedDistrict(lineIndex, colIndex) || isDistrictBeingRotated(lineIndex, colIndex)"
+               class="select-district-tick"
+               src="assets/images/icons/tick.png"
+               alt="tick"/>
+        </div>
+      </div>
+    </div>
+    <div id="sub-board-panel" *ngIf="this.isCurrentGameDefined()">
+      <div *ngIf="this.isEnded()">
+        We have Winner ! And winner is ... {{this.getCurrentGame().winner}}
+      </div>
+    </div>
+  </div>
+  <div *ngIf="isCurrentGameDefined()">
+    <h2>Turn: {{ getCurrentGame().turnNumber}}</h2>
+    <div *ngIf="!isGameStarted()">
+      You can register here, by clicking on the player you want to play:<br/>
+      <img src="assets/images/players/detectives.png" class="player-register pointer"
+           *ngIf="!getCurrentGame().detectiveRegistered"
+           (click)="registerPlayer(false)"
+           alt="detectives">
+      <img src="assets/images/players/mrjack.jpg" class="player-register pointer"
+           *ngIf="!getCurrentGame().mrJackRegistered"
+           (click)="registerPlayer(true)"
+           alt="mrJack">
+    </div>
+    <fieldset class="current-player-panel" *ngIf="amIMrJack() || amIDetective()">
+      Your are:<br>
+      <div *ngIf="amIMrJack()"> - MrJack</div>
+      <div *ngIf="amIDetective()"> - Detective</div>
+    </fieldset>
+    <br/>
+    <fieldset class="actions-panel" *ngIf="!isEnded() && isGameStarted()">
+      <div id="play-tokens">
+        <div *ngIf="isTurnOfDetective()">Turn of Detective</div>
+        <br/>
+        <div *ngIf="!isTurnOfDetective()">Turn of MrJack</div>
+        <div *ngIf="amIamCurrentPlayer()">This is your turn to play, please choose an action:</div>
+        <img *ngFor="let actionToken of getPlayableTokens()"
+             class="action-token pointer"
+             src="assets/images/tokens/{{getTokenImageName(actionToken.currentAction.actionName)}}.png"
+             (click)="clickToken(actionToken.currentAction.actionName)" alt="{{actionToken.currentAction.actionName}}">
+      </div>
+      <div id="action-instructions">
+        <div *ngIf="isSwapDistrictAction()">
+          Cliquez sur 2 districts et validez ici:
+          <button mat-raised-button color="primary" (click)="playSwapDistrict()">Swap District</button>
+        </div>
+        <div *ngIf="isRotateAction()">
+          Cliquez sur 1 district pour le faire tourner et validez ici:
+          <button mat-raised-button color="primary" (click)="playRotateDistrict()">Rotate District</button>
+        </div>
+      </div>
+    </fieldset>
+    <br/>
+    <fieldset class="actions-panel" *ngIf="!isEnded() && isGameStarted()">
+      <fieldset id="mrJack-panel">
+        MrJack has {{countMrJackHourGlasses()}} hourGlasses
+        <span *ngIf="!amIMrJack()">and maybe more with alibi Cards</span>
+        <div>
+          <img *ngFor="let h of getHourGlasses()"
+               class="mrjack-hourglass"
+               src="assets/images/icons/hourglass.png"
+               alt="hourglass"/>
+        </div>
+        <div *ngIf="amIMrJack() && getSecret('true')">
+          Mr Jack Identity is:<br/>
+          <img class="alibi-card" alt="{{getSecret('true').mrJackIdentity}}}}"
+               src="assets/images/cards/{{getSecret('true').mrJackIdentity}}.png">
+          <br/>
+          Mr Jack has {{getSecret('true').alibiCards.length}} alibi cards:<br/>
+          <img class="alibi-card" alt="{{alibiCard.name}}"
+               *ngFor="let alibiCard of getSecret('true').alibiCards"
+               src="assets/images/cards/{{alibiCard.name}}.png">
+        </div>
+      </fieldset>
+      <fieldset id="detective-panel">
+        Detective has {{getCurrentGame().detectivePlayer.alibiCards.length}} alibi cards
+        <div>
+          <img class="alibi-card" alt="{{alibiCard}}"
+               *ngFor="let alibiCard of getCurrentGame().detectivePlayer.alibiCards"
+               src="assets/images/cards/{{alibiCard}}.png">
+        </div>
+      </fieldset>
+    </fieldset>
+  </div>
+</div>

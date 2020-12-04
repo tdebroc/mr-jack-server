@@ -1,0 +1,109 @@
+#all-page {
+  display: table;
+  table-layout: fixed;
+}
+#game-list {
+  display: table-cell;
+  width: 20%;
+}
+
+#game-list .game-item {
+  margin-top: 5px;
+}
+#current-game {
+  width: 50%;
+  display: table-cell;
+  padding: 10px;
+}
+#actions-panel {
+  width: 30%;
+  display: table-cell;
+}
+#board {
+  display: table;
+}
+.board-line {
+  display: table-row;
+}
+.board-cell {
+  display: table-cell;
+  height: 54px;
+}
+.detective-token {
+  width: 50px;
+}
+.bonus-detective-token {
+  width: 50px;
+  opacity: 0.7;
+}
+.cell-district {
+  height: 150px;
+  width: 150px;
+  position: relative;
+}
+.district {
+  z-index: 10;
+  height: 150px;
+  width: 150px;
+  position: absolute;
+}
+.orientation-EAST {
+  transform: rotate(270deg);
+}
+.orientation-NORTH {
+  transform: rotate(180deg);
+}
+.orientation-WEST {
+  transform: rotate(90deg);
+}
+.orientation-SOUTH-force {
+  transform: rotate(0deg);
+}
+.orientation-EAST-force {
+  transform: rotate(270deg);
+}
+.orientation-NORTH-force {
+  transform: rotate(180deg);
+}
+.orientation-WEST-force {
+  transform: rotate(90deg);
+}
+.orientation-SOUTH-force {
+  transform: rotate(0deg);
+}
+.detective-middle-vertical {
+  margin-top: 50px;
+}
+.detective-middle-horizontal {
+  margin-left: 50px;
+}
+.action-token {
+  width: 60px;
+  margin: 2px;
+}
+.select-district-tick {
+  z-index: 120;
+  width: 30px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+.mrjack-hourglass {
+  width: 40px;
+}
+.alibi-card {
+  width: 100px;
+}
+
+#game-list mat-card.selected {
+  background-color: #3c7b9b;
+  color: lightgrey;
+}
+.player-register {
+  width: 100px;
+  margin-right: 10px;
+}
+.game-list {
+  height: 650px;
+  overflow: scroll;
+}
