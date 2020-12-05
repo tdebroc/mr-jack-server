@@ -32,7 +32,7 @@
               (click)="playMoveDetective(getBonusDetective(lineIndex, colIndex))"/>
           </span>
 
-          <img *ngIf="cell.districts" src="assets/images/district/{{getDistrictImageName(cell.districts)}}.png"
+          <img *ngIf="cell.districts" src="assets/images/district/150px/{{getDistrictImageName(cell.districts)}}.png"
                class="district orientation-{{cell.districts.orientationAsString}}"
                [ngClass]="{'pointer' : isDistrictPointer()}"
                [class.orientation-EAST-force]="isRotating('EAST', lineIndex, colIndex)"
