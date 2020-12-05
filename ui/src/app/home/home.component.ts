@@ -11,7 +11,7 @@ import {DetectiveAndPosition} from "../model/detectiveAndPosition";
 // Link helper:
 // https://github.com/tdebroc/ia-server-robotturtles/blob/master/src/main/webapp/app/home/home.controller.js
 export class HomeComponent implements OnInit {
-
+  mode = "clouch"
   currentAction: string | undefined = undefined
   actionToImageName: Record<string, string> = {
     "JokerAction$": "JOKER",
@@ -105,6 +105,10 @@ export class HomeComponent implements OnInit {
   // ===================================================================================================
   // = Display
   // ===================================================================================================
+
+  switchMode() {
+    this.mode = this.mode === "clouch" ? "300px" : "clouch";
+  }
 
   refreshUI() {
     if (this.isCurrentGameDefined()) {
