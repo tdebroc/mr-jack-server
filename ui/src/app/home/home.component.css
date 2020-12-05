@@ -21,12 +21,15 @@
 }
 #board {
   display: table;
+  width: 558px;
+  height: 560px;
 }
 .board-line {
   display: table-row;
 }
 .board-cell {
   display: table-cell;
+  width: 54px;
   height: 54px;
 }
 .detective-token {
