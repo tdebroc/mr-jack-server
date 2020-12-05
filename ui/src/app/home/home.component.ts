@@ -110,7 +110,7 @@ export class HomeComponent implements OnInit {
     if (this.isCurrentGameDefined()) {
       this.dataService.refreshCurrentGame(this.getCurrentGameId())
     }
-    setTimeout(this.refreshUI.bind(this), 4000)
+    setTimeout(this.refreshUI.bind(this), 1500)
   }
 
   isCurrentGameId(game: any) {
