@@ -26,7 +26,7 @@ trait MoveDetectiveAction extends Action {
   override def playAction(actionInput: ActionInput, game: Game): Unit = {
     val moveDetectiveInput = actionInput.asInstanceOf[MoveDetectiveInput]
     game.board.moveDetective(getDetective, moveDetectiveInput.moveCount)
-    game.history += getDetective.toString + " moved " + moveDetectiveInput.moveCount + " positions."
+    game.addMessageToHistory(getDetective.toString + " moved " + moveDetectiveInput.moveCount + " positions.")
   }
 
   def getDetective: DetectiveName

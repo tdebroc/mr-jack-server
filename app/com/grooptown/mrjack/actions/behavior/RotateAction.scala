@@ -41,7 +41,7 @@ object RotateAction extends Action {
     val rotateInput = actionInput.asInstanceOf[RotateInput]
     game.board.getDistricts(rotateInput.districtId).orientation = rotateInput.orientation
     game.board.getDistricts(rotateInput.districtId).isAlreadyRotated = true
-    game.history += "District "  + districtIdToName(rotateInput.districtId) +
-      " rotated with wall on " + rotateInput.orientation
+    game.addMessageToHistory("District "  + districtIdToName(rotateInput.districtId) +
+      " rotated with wall on " + rotateInput.orientation)
   }
 }

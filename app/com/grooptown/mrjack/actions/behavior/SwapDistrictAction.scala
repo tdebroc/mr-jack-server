@@ -36,7 +36,7 @@ object SwapDistrictAction extends Action {
     val district2Pos: Position = Board.districtIdToPosition(swapDistrictInput.district2)
     game.board.cells(district2Pos.line)(district2Pos.col).district = Option.apply(district1)
     game.board.cells(district1Pos.line)(district1Pos.col).district = Option.apply(district2)
-    game.history += "District "  + districtIdToName(swapDistrictInput.district1) +
-        " switched with " + districtIdToName(swapDistrictInput.district2)
+    game.addMessageToHistory("District "  + districtIdToName(swapDistrictInput.district1) +
+      " switched with " + districtIdToName(swapDistrictInput.district2))
   }
 }

@@ -8,6 +8,7 @@ import com.grooptown.mrjack.board.Board
 import com.grooptown.mrjack.players.AlibiName.AlibiName
 import com.grooptown.mrjack.players._
 
+import java.util.Date
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -64,6 +65,10 @@ case class Game() {
   }
 
   def displayMrJack(): Unit = println("MrJack is " + mrJackPlayer.alibiCard + "(" + mrJackPlayer.alibiCard.asChar + ")")
+
+  def addMessageToHistory(message :String): Unit = {
+    history += new Date + " : " + message
+  }
 
   // ===================================================================================================
   // = Display - Getters for front
@@ -129,10 +134,10 @@ case class Game() {
     if (isEvenTurn) detectivePlayer.launchTokenAction(this) else mrJackPlayer.swapActionsToken(this)
     winner = findWinner()
     if (winner.nonEmpty) {
-      history += "Congrats we have a winner ! Winner is ... " + winner.get.printName
+      addMessageToHistory("Congrats we have a winner ! Winner is ... " + winner.get.printName)
     }
     initTurn()
-    history += "This is now Turn : " + getTurnNumber
+    addMessageToHistory("This is now Turn : " + getTurnNumber)
   }
 
   def playActionWithKeyboard(): Unit = {
@@ -146,7 +151,7 @@ case class Game() {
   }
 
   def addActionPlayedToHistory(action: ActionDetails): Unit = {
-    history += getCurrentPlayer.printName + " plays: " + action.action.getActionName.replace("$", "")
+    addMessageToHistory(getCurrentPlayer.printName + " plays: " + action.action.getActionName.replace("$", ""))
   }
 
   def askActionFromUserKeyboard: ActionDetails = {
@@ -174,18 +179,18 @@ case class Game() {
     val visibleCells = board.calculateVisibleCellsFromAllDetective
     println(visibleCells.map(c => c.forPrinting(true)).mkString("Array(", ", ", ")"))
     val isMrJackVisible = visibleCells.exists(_.district.get.name == mrJackName)
-    history += "Witness call: MrJack is " + (if (isMrJackVisible) "" else "not") + " visible"
+    addMessageToHistory("Witness call: MrJack is " + (if (isMrJackVisible) "" else "not") + " visible")
     if (isMrJackVisible) {
       detectivePlayer.turnTokens += turnTokens.remove(0)
       val nonVisibleDistricts = board.getNonVisibleDistrictsFromVisibleCells(visibleCells)
       nonVisibleDistricts.foreach(_.isRecto = false)
       val notMrJack = nonVisibleDistricts.map(d => d.name.toString).toArray
-      history += "They are not MrJack : " + notMrJack.mkString("(", ", ", ")")
+      addMessageToHistory("They are not MrJack : " + notMrJack.mkString("(", ", ", ")"))
     } else {
       mrJackPlayer.turnTokens += turnTokens.remove(0)
       visibleCells.foreach(_.district.get.isRecto = false)
       val notMrJack = visibleCells.map(c => c.district.get.name.toString)
-      history += "They are not MrJack : " + notMrJack.mkString("(", ", ", ")")
+      addMessageToHistory("They are not MrJack : " + notMrJack.mkString("(", ", ", ")"))
     }
   }
 
@@ -199,7 +204,7 @@ case class Game() {
     if (mrJackHasReachObjectives) return Option.apply(mrJackPlayer)
     if (detectiveHasReachObjectives) return Option.apply(detectivePlayer)
     if (haveBothObjective) {
-      history += "Both have reach their objectives, we are in Chase Mode ! MrJack must stay unseen until Turn 8 to win."
+      addMessageToHistory("Both have reach their objectives, we are in Chase Mode ! MrJack must stay unseen until Turn 8 to win.")
     }
     Option.empty
   }
