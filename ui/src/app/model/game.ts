@@ -19,6 +19,7 @@ class ActionToken {
 class Player {
   turnTokenCount: number = 0
   alibiCards: String[] = [];
+  alibiCardsCount: number = 0;
 }
 
 export class Game {

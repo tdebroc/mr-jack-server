@@ -384,7 +384,11 @@ export class HomeComponent implements OnInit {
   }
 
   getHourGlasses() {
-    return this.arrayOne(this.getCurrentGame().mrJack.turnTokenCount)
+    return this.arrayOne(this.countMrJackHourGlasses())
+  }
+
+  getHourGlassesMissing() {
+    return this.arrayOne(6 - this.countMrJackHourGlasses())
   }
 
   arrayOne(n: number | undefined): any[] {
@@ -397,8 +401,9 @@ export class HomeComponent implements OnInit {
     if (this.getSecret('true') && this.getSecret('true').alibiCards.length > 0) {
       countHourGlass += this.getSecret('true').alibiCards.map(a => a.hourGlass).reduce((a, b) => a + b)
     }
-    return this.getHourGlasses().length + countHourGlass
+    return this.getCurrentGame().mrJack.turnTokenCount + countHourGlass
   }
+
 
 
 }

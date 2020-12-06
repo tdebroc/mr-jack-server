@@ -111,13 +111,21 @@
                class="mrjack-hourglass"
                src="assets/images/icons/hourglass.png"
                alt="hourglass"/>
+          <img *ngFor="let h of getHourGlassesMissing()"
+               class="mrjack-hourglass-missing"
+               src="assets/images/icons/hourglass.png"
+               alt="hourglass"/>
         </div>
         <div *ngIf="amIMrJack() && getSecret('true')">
           Mr Jack Identity is:<br/>
           <img class="alibi-card" alt="{{getSecret('true').mrJackIdentity}}}}"
                src="assets/images/cards/{{getSecret('true').mrJackIdentity}}.png">
           <br/>
-          Mr Jack has {{getSecret('true').alibiCards.length}} alibi cards:<br/>
+        </div>
+        <div>
+          Mr Jack has {{getCurrentGame().mrJack.alibiCardsCount}} alibi cards
+        </div>
+        <div *ngIf="amIMrJack() && getSecret('true')">
           <img class="alibi-card" alt="{{alibiCard.name}}"
                *ngFor="let alibiCard of getSecret('true').alibiCards"
                src="assets/images/cards/{{alibiCard.name}}.png">

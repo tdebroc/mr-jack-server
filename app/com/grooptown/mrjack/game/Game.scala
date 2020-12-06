@@ -129,7 +129,7 @@ case class Game() {
     if (isEvenTurn) detectivePlayer.launchTokenAction(this) else mrJackPlayer.swapActionsToken(this)
     winner = findWinner()
     if (winner.nonEmpty) {
-      history += "Congrats we have a winner ! Winner is ... " + getCurrentPlayer.printName
+      history += "Congrats we have a winner ! Winner is ... " + winner.get.printName
     }
     initTurn()
     history += "This is now Turn : " + getTurnNumber
@@ -198,6 +198,9 @@ case class Game() {
     if (haveBothObjective && checkIfMrJackVisible) return Option.apply(detectivePlayer)
     if (mrJackHasReachObjectives) return Option.apply(mrJackPlayer)
     if (detectiveHasReachObjectives) return Option.apply(detectivePlayer)
+    if (haveBothObjective) {
+      history += "Both have reach their objectives, we are in Chase Mode ! MrJack must stay unseen until Turn 8 to win."
+    }
     Option.empty
   }
 

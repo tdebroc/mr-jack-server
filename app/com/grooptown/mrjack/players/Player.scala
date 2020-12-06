@@ -9,6 +9,7 @@ trait Player {
   var alibiCards : ListBuffer[AlibiCard] = new ListBuffer[AlibiCard]
   var turnTokens : ListBuffer[TurnToken] = new ListBuffer[TurnToken]
   def getTurnTokenCount: Int = turnTokens.length
+  def getAlibiCardsCount: Int = alibiCards.length
   def hasReachObjective(game : Game): Boolean
   def printName : String
 

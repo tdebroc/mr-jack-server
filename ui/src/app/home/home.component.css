@@ -94,6 +94,10 @@
 .mrjack-hourglass {
   width: 40px;
 }
+.mrjack-hourglass-missing {
+  width: 40px;
+  opacity: 0.4;
+}
 .alibi-card {
   width: 100px;
 }
