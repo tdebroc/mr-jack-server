@@ -111,10 +111,6 @@ export class HomeComponent implements OnInit {
   // = Display
   // ===================================================================================================
 
-  switchMode() {
-    this.mode = this.mode === "clouch" ? "300px" : "clouch";
-  }
-
   refreshUI() {
     if (this.isCurrentGameDefined()) {
       this.dataService.refreshCurrentGame(this.getCurrentGameId())
