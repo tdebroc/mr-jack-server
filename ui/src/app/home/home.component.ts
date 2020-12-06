@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {DataServiceService} from "../dataService/data-service.service";
 import {Position} from "../model/position";
 import {DetectiveAndPosition} from "../model/detectiveAndPosition";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-home',
@@ -11,7 +12,7 @@ import {DetectiveAndPosition} from "../model/detectiveAndPosition";
 // Link helper:
 // https://github.com/tdebroc/ia-server-robotturtles/blob/master/src/main/webapp/app/home/home.controller.js
 export class HomeComponent implements OnInit {
-  mode = "clouch"
+  mode = "300px"
   currentAction: string | undefined = undefined
   actionToImageName: Record<string, string> = {
     "JokerAction$": "JOKER",
@@ -32,9 +33,13 @@ export class HomeComponent implements OnInit {
   detectiveMovePossiblePosition: DetectiveAndPosition[] | undefined = undefined;
 
 
-  constructor(private dataService: DataServiceService) {
+  constructor(private dataService: DataServiceService,
+              private activatedRoute: ActivatedRoute) {
     this.dataService.loadGames(this.selectFirstGame.bind(this));
     this.refreshUI()
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.mode = params['mode'];
+    });
   }
 
   ngOnInit() {
