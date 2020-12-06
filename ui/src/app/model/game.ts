@@ -32,4 +32,5 @@ export class Game {
   winner: string | undefined = undefined;
   detectiveRegistered: boolean = false;
   mrJackRegistered: boolean = false;
+  history: String[] = [];
 }

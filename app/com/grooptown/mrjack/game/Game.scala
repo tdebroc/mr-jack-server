@@ -2,7 +2,6 @@ package com.grooptown.mrjack.game
 
 import java.util
 import java.util.UUID.randomUUID
-
 import com.grooptown.mrjack.actions.tokens._
 import com.grooptown.mrjack.actions.{ActionDetails, ActionService}
 import com.grooptown.mrjack.board.Board
@@ -23,6 +22,7 @@ case class Game() {
   val mrJackPlayer: MrJackPlayer = MrJackPlayer(pickAlibiCard())
   var winner: Option[Player] = Option.empty
   val secrets: util.Map[String, PlayerSecret] = new util.HashMap[String, PlayerSecret]
+  val history: mutable.ListBuffer[String] = new mutable.ListBuffer[String]
 
   def initActionsToken(): ListBuffer[ActionToken] = ListBuffer(new JokerRotateToken, new SherlockAlibiToken, new SwapRotateToken, new WatsonTobbyToken)
 
@@ -66,7 +66,7 @@ case class Game() {
   def displayMrJack(): Unit = println("MrJack is " + mrJackPlayer.alibiCard + "(" + mrJackPlayer.alibiCard.asChar + ")")
 
   // ===================================================================================================
-  // = Getters for front
+  // = Display - Getters for front
   // ===================================================================================================
   def getBoard: Board = board
 
@@ -77,6 +77,8 @@ case class Game() {
   def getActionTokens: Array[ActionToken] = actionTokens.toArray
 
   def getWinner: String = if (winner.isDefined) winner.get.printName else null
+
+  def getHistory: Array[String] = history.toArray
 
   // ===================================================================================================
   // = Multiplayer
@@ -126,7 +128,11 @@ case class Game() {
     witnessCall(mrJackPlayer.alibiCard.name)
     if (isEvenTurn) detectivePlayer.launchTokenAction(this) else mrJackPlayer.swapActionsToken(this)
     winner = findWinner()
+    if (winner.nonEmpty) {
+      history += "Congrats we have a winner ! Winner is ... " + getCurrentPlayer.printName
+    }
     initTurn()
+    history += "This is now Turn : " + getTurnNumber
   }
 
   def playActionWithKeyboard(): Unit = {
@@ -134,8 +140,13 @@ case class Game() {
   }
 
   def playAction(action: ActionDetails): Unit = {
+    addActionPlayedToHistory(action)
     action.action.playAction(action.actionInput, this)
     action.actionToken.isUsed = true
+  }
+
+  def addActionPlayedToHistory(action: ActionDetails): Unit = {
+    history += getCurrentPlayer.printName + " plays: " + action.action.getActionName.replace("$", "")
   }
 
   def askActionFromUserKeyboard: ActionDetails = {
@@ -163,12 +174,18 @@ case class Game() {
     val visibleCells = board.calculateVisibleCellsFromAllDetective
     println(visibleCells.map(c => c.forPrinting(true)).mkString("Array(", ", ", ")"))
     val isMrJackVisible = visibleCells.exists(_.district.get.name == mrJackName)
+    history += "Witness call: MrJack is " + (if (isMrJackVisible) "" else "not") + " visible"
     if (isMrJackVisible) {
       detectivePlayer.turnTokens += turnTokens.remove(0)
-      board.getNonVisibleDistrictsFromVisibleCells(visibleCells).foreach(_.isRecto = false)
+      val nonVisibleDistricts = board.getNonVisibleDistrictsFromVisibleCells(visibleCells)
+      nonVisibleDistricts.foreach(_.isRecto = false)
+      val notMrJack = nonVisibleDistricts.map(d => d.name.toString).toArray
+      history += "They are not MrJack : " + notMrJack.mkString("(", ", ", ")")
     } else {
       mrJackPlayer.turnTokens += turnTokens.remove(0)
       visibleCells.foreach(_.district.get.isRecto = false)
+      val notMrJack = visibleCells.map(c => c.district.get.name.toString)
+      history += "They are not MrJack : " + notMrJack.mkString("(", ", ", ")")
     }
   }
 

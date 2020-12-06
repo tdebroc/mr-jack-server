@@ -4,13 +4,11 @@ import com.grooptown.mrjack.board.Cell.CELL_WIDTH
 import com.grooptown.mrjack.board.DetectiveName.DetectiveName
 import com.grooptown.mrjack.board.Orientation.{EAST, NORTH, SOUTH, WEST}
 import com.grooptown.mrjack.game.Position
-import com.grooptown.mrjack.players
 import com.grooptown.mrjack.players.AlibiName
 import com.grooptown.mrjack.players.AlibiName.{AlibiName, LESTRADE}
 
 import scala.Array.ofDim
 import scala.Option._
-import scala.collection.{immutable, mutable}
 import scala.collection.mutable.ListBuffer
 import scala.util.Random
 import scala.util.control.Breaks.{break, breakable}
@@ -54,8 +52,8 @@ class Board {
         }
       })
     })
-    cells(1)(1).district.get.orientation = EAST
-    cells(1)(3).district.get.orientation = WEST
+    cells(1)(1).district.get.orientation = WEST
+    cells(1)(3).district.get.orientation = EAST
     cells(3)(2).district.get.orientation = SOUTH
     cells(2)(2).district.get.isCross = true
     detectivePositions.foreach(pos => detectiveCells += cells(pos.line)(pos.col))

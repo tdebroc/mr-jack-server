@@ -4,6 +4,7 @@ import com.grooptown.mrjack.actions.exceptions.WrongInputException
 import com.grooptown.mrjack.actions.input.{ActionInput, MoveDetectiveInput}
 import com.grooptown.mrjack.board.DetectiveName
 import com.grooptown.mrjack.board.DetectiveName.DetectiveName
+import com.grooptown.mrjack.board.District.districtIdToName
 import com.grooptown.mrjack.game.Game
 
 import scala.collection.mutable
@@ -25,6 +26,7 @@ trait MoveDetectiveAction extends Action {
   override def playAction(actionInput: ActionInput, game: Game): Unit = {
     val moveDetectiveInput = actionInput.asInstanceOf[MoveDetectiveInput]
     game.board.moveDetective(getDetective, moveDetectiveInput.moveCount)
+    game.history += getDetective.toString + " moved " + moveDetectiveInput.moveCount + " positions."
   }
 
   def getDetective: DetectiveName

@@ -52,6 +52,12 @@
       <div *ngIf="this.isEnded()">
         We have Winner ! And winner is ... {{this.getCurrentGame().winner}}
       </div>
+      <div >
+        History:
+        <div *ngFor="let historyLine of this.getCurrentGame().history.slice().reverse()">
+          {{historyLine}}
+        </div>
+      </div>
     </div>
   </div>
   <div *ngIf="isCurrentGameDefined()">

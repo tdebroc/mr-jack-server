@@ -2,6 +2,7 @@ package com.grooptown.mrjack.actions.behavior
 
 import com.grooptown.mrjack.actions.exceptions.WrongInputException
 import com.grooptown.mrjack.actions.input.{ActionInput, RotateInput}
+import com.grooptown.mrjack.board.District.districtIdToName
 import com.grooptown.mrjack.board.Orientation
 import com.grooptown.mrjack.game.Game
 
@@ -40,5 +41,7 @@ object RotateAction extends Action {
     val rotateInput = actionInput.asInstanceOf[RotateInput]
     game.board.getDistricts(rotateInput.districtId).orientation = rotateInput.orientation
     game.board.getDistricts(rotateInput.districtId).isAlreadyRotated = true
+    game.history += "District "  + districtIdToName(rotateInput.districtId) +
+      " rotated with wall on " + rotateInput.orientation
   }
 }

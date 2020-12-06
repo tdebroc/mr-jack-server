@@ -32,3 +32,16 @@ case class District(name: AlibiName,
     chars
   }
 }
+object District {
+  val districtIdToName = Map(
+    0 -> "Top-Left",
+    1 -> "Top-Middle",
+    2 -> "Top-Right",
+    3 -> "Middle-Left",
+    4 -> "Center",
+    5 -> "Middle-Right",
+    6 -> "Bottom-Left",
+    7 -> "Bottom-Middle",
+    8 -> "Bottom-Left"
+  )
+}

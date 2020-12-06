@@ -45,34 +45,34 @@ class GameController @Inject()(cc: ControllerComponents) extends AbstractControl
   }
 
 
-def registerToGame: Action[AnyContent] = Action {
-  request: Request[AnyContent] =>
-  val registerRequest: JsValue = request.body.asJson.get
-  val register = RegisterRequest (
-  registerRequest ("gameId").as[String],
-  registerRequest ("pseudo").as[String],
-  registerRequest ("isMrJack").as[Boolean],
-  )
-  if (! games.containsKey (register.gameId) ) {
-  NotFound ("Game is not found : " + register.gameId)
-} else {
-  val game = games.get (register.gameId)
-  if (register.isMrJack && game.isMrJackRegistered || ! register.isMrJack && game.isDetectiveRegistered) {
-  BadRequest ("Player role already registered in this game.")
-} else {
-  val secretId = game.registerPlayer (register.pseudo, register.isMrJack)
-  Ok (stringify (SecretResponse (secretId) ) )
-}
-}
-}
+  def registerToGame: Action[AnyContent] = Action {
+    request: Request[AnyContent] =>
+      val registerRequest: JsValue = request.body.asJson.get
+      val register = RegisterRequest(
+        registerRequest("gameId").as[String],
+        registerRequest("pseudo").as[String],
+        registerRequest("isMrJack").as[Boolean],
+      )
+      if (!games.containsKey(register.gameId)) {
+        NotFound("Game is not found : " + register.gameId)
+      } else {
+        val game = games.get(register.gameId)
+        if (register.isMrJack && game.isMrJackRegistered || !register.isMrJack && game.isDetectiveRegistered) {
+          BadRequest("Player role already registered in this game.")
+        } else {
+          val secretId = game.registerPlayer(register.pseudo, register.isMrJack)
+          Ok(stringify(SecretResponse(secretId)))
+        }
+      }
+  }
 
-  def getSecret (gameId: String, secretId: String): mvc.Result = {
-  if (! games.containsKey (gameId) ) NotFound ("Game is not found : " + gameId)
-  if (! games.get (gameId).secrets.containsKey (secretId) ) NotFound ("Player is not found : " + secretId)
-  play.mvc.Results.ok (stringify (games.get (gameId).secrets.get (secretId) ) )
-}
+  def getSecret(gameId: String, secretId: String): mvc.Result = {
+    if (!games.containsKey(gameId)) NotFound("Game is not found : " + gameId)
+    if (!games.get(gameId).secrets.containsKey(secretId)) NotFound("Player is not found : " + secretId)
+    play.mvc.Results.ok(stringify(games.get(gameId).secrets.get(secretId)))
+  }
 
-  def sendOk (): Result = {
-  Ok (stringify (MessageResponse ("OK") ) )
-}
+  def sendOk(): Result = {
+    Ok(stringify(MessageResponse("OK")))
+  }
 }
