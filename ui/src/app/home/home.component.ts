@@ -40,6 +40,8 @@ export class HomeComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe(params => {
       this.mode = params['mode'];
     });
+    Notification.requestPermission(function () {
+    }).then(() => console.log("Notification Permission granted."))
   }
 
   ngOnInit() {
@@ -358,6 +360,10 @@ export class HomeComponent implements OnInit {
     return founds.length > 0 ? founds[0] : undefined;
   }
 
+  jokerDoNothing() {
+    this.sendAction(this.getCurrentActionIndex() + "_NOTHING")
+  }
+
   playMoveDetective(bonusDetective: DetectiveAndPosition) {
     console.log("Playing " + JSON.stringify(bonusDetective));
     let actionDetails = this.getCurrentActionIndex() + "_"
@@ -374,6 +380,7 @@ export class HomeComponent implements OnInit {
         this.positionDistrictSelect1 = undefined
         this.positionDistrictSelect2 = undefined
         this.rotateDistrictPosition = undefined
+        new Notification("Action Done", {body: "User has played"});
         if (callback) callback(data)
       })
   }

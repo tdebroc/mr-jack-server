@@ -16,7 +16,7 @@ object MainTesting {
 */
 
   def playOneTurn(): Unit = {
-    val game: Game = new Game
+    val game: Game = Game.buildNewGame
     game.board.printBoard()
     println("MrJack is " + game.mrJackPlayer.alibiCard + " : " + game.mrJackPlayer.alibiCard.asChar)
     game.initTurn()

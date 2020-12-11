@@ -2,7 +2,7 @@ package com.grooptown.mrjack.players
 
 import com.grooptown.mrjack.game.Game
 
-case class MrJackPlayer(alibiCard: AlibiCard) extends Player {
+case class MrJackPlayer(var alibiCard: AlibiCard = null) extends Player {
 
   override def hasReachObjective(game : Game): Boolean = countHourGlass() >= 6
 

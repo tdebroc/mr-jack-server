@@ -55,7 +55,7 @@ class Board {
     cells(1)(1).district.get.orientation = WEST
     cells(1)(3).district.get.orientation = EAST
     cells(3)(2).district.get.orientation = SOUTH
-    cells(2)(2).district.get.isCross = true
+    // cells(2)(2).district.get.isCross = true
     detectivePositions.foreach(pos => detectiveCells += cells(pos.line)(pos.col))
     cells
   }
@@ -95,7 +95,7 @@ class Board {
   def innocentAlibi(name: AlibiName): Unit = {
     println("We innocent " + name)
     val district = getDistricts.filter(_.name == name).head
-    district.isRecto = false
+    district.reverseDistrict()
   }
 
   def moveDetective(detectiveName: DetectiveName, moveCount: Int): Unit = {

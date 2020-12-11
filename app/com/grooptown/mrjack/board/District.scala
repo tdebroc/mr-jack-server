@@ -31,6 +31,13 @@ case class District(name: AlibiName,
     }
     chars
   }
+
+  def reverseDistrict(): Unit = {
+    isRecto = false
+    if (name.equals(AlibiName.JOSEPH_LANG)) {
+      isCross = true
+    }
+  }
 }
 object District {
   val districtIdToName = Map(

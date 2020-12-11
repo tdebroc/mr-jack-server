@@ -13,26 +13,20 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-case class Game() {
-  val MAX_TURN = 8
-  val board: Board = new Board()
-  val alibiCards: mutable.ListBuffer[AlibiCard] = initAlibiCards()
-  val turnTokens: mutable.ListBuffer[TurnToken] = initTurnTokens()
-  val actionTokens: mutable.ListBuffer[ActionToken] = initActionsToken()
-  val detectivePlayer: DetectivePlayer = DetectivePlayer()
-  val mrJackPlayer: MrJackPlayer = MrJackPlayer(pickAlibiCard())
-  var winner: Option[Player] = Option.empty
-  val secrets: util.Map[String, PlayerSecret] = new util.HashMap[String, PlayerSecret]
-  val history: mutable.ListBuffer[String] = new mutable.ListBuffer[String]
-
-  def initActionsToken(): ListBuffer[ActionToken] = ListBuffer(new JokerRotateToken, new SherlockAlibiToken, new SwapRotateToken, new WatsonTobbyToken)
-
-  def initTurnTokens(): ListBuffer[TurnToken] = ListBuffer.fill(MAX_TURN)(new TurnToken)
-
-  def initAlibiCards(): ListBuffer[AlibiCard] = AlibiCard.initAlibiCards
+case class Game(
+                 board: Board = new Board(),
+                 var alibiCards: mutable.ListBuffer[AlibiCard],
+                 turnTokens: mutable.ListBuffer[TurnToken],
+                 var actionTokens: mutable.ListBuffer[ActionToken],
+                 detectivePlayer: DetectivePlayer = DetectivePlayer(),
+                 mrJackPlayer: MrJackPlayer = MrJackPlayer(),
+                 var winner: Option[Player] = Option.empty,
+                 secrets: util.Map[String, PlayerSecret] = new util.HashMap[String, PlayerSecret],
+                 history: mutable.ListBuffer[String] = new mutable.ListBuffer[String]
+               ) {
 
   def initGame(): Unit = {
-    if (isEvenTurn) detectivePlayer.launchTokenAction(this) else mrJackPlayer.swapActionsToken(this)
+    mrJackPlayer.alibiCard = pickAlibiCard()
     initTurn()
   }
 
@@ -50,7 +44,7 @@ case class Game() {
 
   def isEvenTurn: Boolean = turnTokens.length % 2 == 0
 
-  def getTurnNumber: Int = Math.abs(turnTokens.length - MAX_TURN)
+  def getTurnNumber: Int = Math.abs(turnTokens.length - Game.MAX_TURN)
 
   def countUnusedToken(): Int = actionTokens.count(!_.isUsed)
 
@@ -66,7 +60,7 @@ case class Game() {
 
   def displayMrJack(): Unit = println("MrJack is " + mrJackPlayer.alibiCard + "(" + mrJackPlayer.alibiCard.asChar + ")")
 
-  def addMessageToHistory(message :String): Unit = {
+  def addMessageToHistory(message: String): Unit = {
     history += new Date + " : " + message
   }
 
@@ -118,12 +112,12 @@ case class Game() {
   def initTurn(): Unit = {
     actionTokens.foreach(_.isUsed = false)
     board.getDistricts.foreach(_.isAlreadyRotated = false)
+    if (isEvenTurn) detectivePlayer.launchTokenAction(this) else mrJackPlayer.swapActionsToken(this)
   }
 
   def playTurn(): Unit = {
-    println("⏳ Playing Turn " + (MAX_TURN - turnTokens.length + 1) + "")
+    println("⏳ Playing Turn " + (Game.MAX_TURN - turnTokens.length + 1) + "")
     initTurn()
-    if (isEvenTurn) detectivePlayer.launchTokenAction(this) else mrJackPlayer.swapActionsToken(this)
     1 to 4 foreach { _ => playActionWithKeyboard() }
     witnessCall(mrJackPlayer.alibiCard.name)
   }
@@ -131,10 +125,10 @@ case class Game() {
   def handleActionPlayed() {
     if (countUnusedToken() != 0) return
     witnessCall(mrJackPlayer.alibiCard.name)
-    if (isEvenTurn) detectivePlayer.launchTokenAction(this) else mrJackPlayer.swapActionsToken(this)
     winner = findWinner()
     if (winner.nonEmpty) {
       addMessageToHistory("Congrats we have a winner ! Winner is ... " + winner.get.printName)
+      return
     }
     initTurn()
     addMessageToHistory("This is now Turn : " + getTurnNumber)
@@ -183,12 +177,12 @@ case class Game() {
     if (isMrJackVisible) {
       detectivePlayer.turnTokens += turnTokens.remove(0)
       val nonVisibleDistricts = board.getNonVisibleDistrictsFromVisibleCells(visibleCells)
-      nonVisibleDistricts.foreach(_.isRecto = false)
+      nonVisibleDistricts.foreach(_.reverseDistrict())
       val notMrJack = nonVisibleDistricts.map(d => d.name.toString).toArray
       addMessageToHistory("They are not MrJack : " + notMrJack.mkString("(", ", ", ")"))
     } else {
       mrJackPlayer.turnTokens += turnTokens.remove(0)
-      visibleCells.foreach(_.district.get.isRecto = false)
+      visibleCells.foreach(_.district.get.reverseDistrict())
       val notMrJack = visibleCells.map(c => c.district.get.name.toString)
       addMessageToHistory("They are not MrJack : " + notMrJack.mkString("(", ", ", ")"))
     }
@@ -224,4 +218,22 @@ case class Game() {
     println("And the Winner is .... " + findWinner().get.printName + " : Congrats ! ")
     println("\uD83C\uDF86 \uD83C\uDF86 \uD83C\uDF86 \uD83C\uDF86 \uD83C\uDF86 \uD83C\uDF86")
   }
+}
+
+object Game {
+  val MAX_TURN: Int = 8
+
+  def buildNewGame: Game = {
+    new Game(
+      alibiCards = initAlibiCards(),
+      turnTokens = initTurnTokens(),
+      actionTokens = initActionsToken()
+    )
+  }
+
+  def initActionsToken(): ListBuffer[ActionToken] = ListBuffer(new JokerRotateToken, new SherlockAlibiToken, new SwapRotateToken, new WatsonTobbyToken)
+
+  def initTurnTokens(): ListBuffer[TurnToken] = ListBuffer.fill(MAX_TURN)(new TurnToken)
+
+  def initAlibiCards(): ListBuffer[AlibiCard] = AlibiCard.initAlibiCards
 }

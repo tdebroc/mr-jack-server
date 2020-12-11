@@ -99,6 +99,10 @@
           Cliquez sur 1 district pour le faire tourner et validez ici:
           <button mat-raised-button color="primary" (click)="playRotateDistrict()">Rotate District</button>
         </div>
+        <div *ngIf="isItJokerAction() && !isTurnOfDetective()">
+          If you want to keep detectives at their places, click here:
+          <button mat-raised-button color="primary" (click)="jokerDoNothing()">Do Nothing</button>
+        </div>
       </div>
     </fieldset>
     <br/>
