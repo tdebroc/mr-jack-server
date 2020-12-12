@@ -80,6 +80,12 @@
 .detective-middle-horizontal {
   margin-left: 50px;
 }
+.detective-middle-vertical-moreThan1 {
+  margin-top: 0;
+}
+.detective-middle-horizontal-moreThan1 {
+  margin-left: 0;
+}
 .action-token {
   width: 60px;
   margin: 2px;
@@ -90,6 +96,13 @@
   position: absolute;
   top: 10px;
   left: 10px;
+}
+.select-district-tick {
+  z-index: 120;
+  width: 30px;
+  position: absolute;
+  top: 10px;
+  left: 50px;
 }
 .mrjack-hourglass {
   width: 40px;

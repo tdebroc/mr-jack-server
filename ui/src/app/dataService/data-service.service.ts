@@ -99,6 +99,7 @@ export class DataServiceService {
       });
   }
 
+
   getGames() {
     return this.games
   }
@@ -113,6 +114,15 @@ export class DataServiceService {
         localStorage.setItem(this.CURRENT_PLAYERS_LS_KEY, JSON.stringify(this.currentPlayers));
         this.refreshCurrentGame(currentGameId);
         if (callback) callback(data)
+      });
+  }
+
+  registerAIPlayer(aiLevel: string, isMrJack: boolean, currentGameId: string) {
+    this.http
+      .post(this.getUrlPrefix() + '/registerAI',
+        {aiLevel, isMrJack, gameId: currentGameId})
+      .subscribe(() => {
+        this.refreshCurrentGame(currentGameId);
       });
   }
 
@@ -146,4 +156,7 @@ export class DataServiceService {
       .filter(key => key.startsWith(gameId))
       .map(key => this.currentPlayers[key])
   }
+
+
+
 }

@@ -17,6 +17,8 @@ GET  /game/:gameId/clone             controllers.GameController.cloneGame(gameId
 
 POST /playAction                     controllers.GameController.playAction(secretId: String)
 
+POST /registerAI                     controllers.GameController.registerAiToGame
+
 POST /register                       controllers.GameController.registerToGame
 
 # Serve static assets under public directory

@@ -19,7 +19,10 @@
             <img *ngFor="let detective of cell.detectives"
                  class="detective-token"
                  [ngClass]="{'detective-middle-vertical' : colIndex === 0 || colIndex === 4,
-                             'detective-middle-horizontal' : lineIndex === 0 || lineIndex === 4}"
+                             'detective-middle-horizontal' : lineIndex === 0 || lineIndex === 4,
+                             'detective-middle-vertical-moreThan1' : (colIndex === 0 || colIndex === 4) && cell.detectives.length > 1,
+                             'detective-middle-horizontal-moreThan1' : (lineIndex === 0 || lineIndex === 4) && cell.detectives.length > 1
+                             }"
                  src="assets/images/tokens/{{detective.name}}.png" alt="{{detective.name}}"/>
           </div>
           <span *ngIf="getBonusDetective(lineIndex, colIndex)">
@@ -45,6 +48,11 @@
                class="select-district-tick"
                src="assets/images/icons/tick.png"
                alt="tick"/>
+          <img *ngIf="isRotateAction() && cell.districts && cell.districts.alreadyRotated"
+               class="select-district-tick"
+               src="assets/images/icons/red-cross.png"
+               alt="tick"/>
+
         </div>
       </div>
     </div>
@@ -52,8 +60,8 @@
       <div *ngIf="this.isEnded()">
         We have Winner ! And winner is ... {{this.getCurrentGame().winner}}
       </div>
-      <div >
-        History:
+      <div>
+        History: <span (click)="playAILevel0()" class="pointer">0</span>
         <div *ngFor="let historyLine of this.getCurrentGame().history.slice().reverse()">
           {{historyLine}}
         </div>
@@ -72,6 +80,12 @@
            *ngIf="!getCurrentGame().mrJackRegistered"
            (click)="registerPlayer(true)"
            alt="mrJack">
+      <button mat-raised-button color="primary"
+              *ngIf="!getCurrentGame().detectiveRegistered"
+              (click)="registerAIPlayer('0', false)">Detective as AI Random</button>
+      <button mat-raised-button color="primary"
+              *ngIf="!getCurrentGame().mrJackRegistered"
+              (click)="registerAIPlayer('0', true)">MrJack as AI Random</button>
     </div>
     <fieldset class="current-player-panel" *ngIf="amIMrJack() || amIDetective()">
       Your are:<br>

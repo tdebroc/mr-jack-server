@@ -9,7 +9,7 @@ object AlibiCardAction extends Action {
 
   override def isValidAction(actionInput: ActionInput, game: Game): Boolean = true
 
-  override def generatePossibleInputString: Array[String] = Array("")
+  override def generatePossibleInputString(game: Game): Array[String] = Array("")
 
   override def playAction(actionInput: ActionInput, game: Game): Unit = {
     val cardPicked = game.pickAlibiCard()

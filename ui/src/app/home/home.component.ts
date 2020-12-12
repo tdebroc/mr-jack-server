@@ -9,8 +9,6 @@ import {ActivatedRoute} from "@angular/router";
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-// Link helper:
-// https://github.com/tdebroc/ia-server-robotturtles/blob/master/src/main/webapp/app/home/home.controller.js
 export class HomeComponent implements OnInit {
   mode = "300px"
   currentAction: string | undefined = undefined
@@ -88,6 +86,9 @@ export class HomeComponent implements OnInit {
     this.dataService.registerPlayer("Player", isMrJack, this.getCurrentGameId())
   }
 
+  registerAIPlayer(aiLevel: string, isMrJack: boolean) {
+    this.dataService.registerAIPlayer(aiLevel, isMrJack, this.getCurrentGameId())
+  }
 
   amIMrJack() {
     return this.dataService.currentPlayers[this.dataService.getPlayerKey(this.getCurrentGameId(), true)]
@@ -372,7 +373,8 @@ export class HomeComponent implements OnInit {
   }
 
   sendAction(actionDetails: string, callback: undefined | ((data: MessageResponse) => void) = undefined) {
-    this.dataService.playAction(this.getCurrentGameId(),
+    this.dataService.playAction(
+      this.getCurrentGameId(),
       !this.getCurrentGame().detectiveCurrentPlayer,
       actionDetails,
       (data) => {
@@ -394,7 +396,7 @@ export class HomeComponent implements OnInit {
   }
 
   getHourGlassesMissing() {
-    return this.arrayOne(6 - this.countMrJackHourGlasses())
+    return this.arrayOne( Math.max(0, 6 - this.countMrJackHourGlasses()))
   }
 
   arrayOne(n: number | undefined): any[] {
@@ -411,6 +413,8 @@ export class HomeComponent implements OnInit {
   }
 
 
-
+  playAILevel0() {
+    this.sendAction("AI_0")
+  }
 }
 

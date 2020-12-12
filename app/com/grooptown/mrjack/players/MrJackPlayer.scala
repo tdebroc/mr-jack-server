@@ -17,4 +17,6 @@ case class MrJackPlayer(var alibiCard: AlibiCard = null,
   def countHourGlass(): Int = alibiCards.map(_.hourGlassCount).sum + turnTokens.length
 
   override def printName: String = "\uD83D\uDD74 Mr Jack"
+
+  override def copyPlayer: MrJackPlayer = MrJackPlayer(alibiCard, alibiCards.map(_.copy()))
 }

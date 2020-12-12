@@ -21,7 +21,7 @@ trait MoveDetectiveAction extends Action {
     else throw WrongInputException("Your move should be between 1 and 2")
   }
 
-  override def generatePossibleInputString: Array[String] = Array("1", "2")
+  override def generatePossibleInputString(game: Game): Array[String] = Array("1", "2")
 
   override def playAction(actionInput: ActionInput, game: Game): Unit = {
     val moveDetectiveInput = actionInput.asInstanceOf[MoveDetectiveInput]

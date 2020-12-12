@@ -24,8 +24,16 @@ object SwapDistrictAction extends Action {
     else throw WrongInputException("Your district ID should be between 0 and 8 inclusive")
   }
 
-  override def generatePossibleInputString: Array[String] = {
-    Array("1-2","1-3","1-4","1-5","1-6","1-7","1-8","1-9","2-3","2-4","2-5","2-6","2-7","2-8","2-9","3-4","3-5","3-6","3-7","3-8","3-9","4-5","4-6","4-7","4-8","4-9","5-6","5-7","5-8","5-9","6-7","6-8","6-9","7-8","7-9","8-9")
+  override def generatePossibleInputString(game: Game): Array[String] = {
+    Array(
+      "0-1", "0-2", "0-3", "0-4", "0-5", "0-6", "0-7", "0-8",
+      "1-2", "1-3", "1-4", "1-5", "1-6", "1-7", "1-8",
+      "2-3", "2-4", "2-5", "2-6", "2-7", "2-8",
+      "3-4", "3-5", "3-6", "3-7", "3-8",
+      "4-5", "4-6", "4-7", "4-8",
+      "5-6", "5-7", "5-8",
+      "6-7", "6-8",
+      "7-8")
   }
 
   override def playAction(actionInput: ActionInput, game: Game): Unit = {
@@ -36,7 +44,7 @@ object SwapDistrictAction extends Action {
     val district2Pos: Position = Board.districtIdToPosition(swapDistrictInput.district2)
     game.board.cells(district2Pos.line)(district2Pos.col).district = Option.apply(district1)
     game.board.cells(district1Pos.line)(district1Pos.col).district = Option.apply(district2)
-    game.addMessageToHistory("District "  + districtIdToName(swapDistrictInput.district1) +
+    game.addMessageToHistory("District " + districtIdToName(swapDistrictInput.district1) +
       " switched with " + districtIdToName(swapDistrictInput.district2))
   }
 }

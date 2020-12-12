@@ -5,6 +5,8 @@ import com.grooptown.mrjack.actions.input.{ActionInput, JokerInput}
 import com.grooptown.mrjack.board.DetectiveName
 import com.grooptown.mrjack.game.Game
 
+import scala.collection.mutable.ListBuffer
+
 object JokerAction extends Action {
   override def getInputFromString(move: String): ActionInput = {
     if (move.equals("NOTHING")) return JokerInput(null, doNothing = true)
@@ -19,8 +21,13 @@ object JokerAction extends Action {
     true
   }
 
-  override def generatePossibleInputString: Array[String] = {
-    Array.concat(Array("NOTHING"), DetectiveName.values.map(_.toString).toArray)
+  override def generatePossibleInputString(game: Game): Array[String] = {
+    val moves = new ListBuffer[String]
+    moves ++= DetectiveName.values.map(_.toString).toList
+    if (!game.isDetectiveCurrentPlayer) {
+      moves += "NOTHING"
+    }
+    moves.toArray
   }
 
   override def playAction(actionInput: ActionInput, game: Game): Unit = {

@@ -27,11 +27,15 @@ object RotateAction extends Action {
     true
   }
 
-  override def generatePossibleInputString: Array[String] = {
+  override def generatePossibleInputString(game: Game): Array[String] = {
+
     val moves = new mutable.ListBuffer[String]()
     0 to 8 foreach (districtId => {
+      val district = game.board.getDistricts(districtId)
       Orientation.values.map(_.toString).foreach(orientation => {
-        moves += districtId + "-" + orientation
+        if (!district.isAlreadyRotated && !district.orientation.equals(orientation)) {
+          moves += districtId + "-" + orientation
+        }
       })
     })
     moves.toArray

@@ -4,6 +4,8 @@ import java.util
 import java.util.UUID.randomUUID
 import com.grooptown.mrjack.actions.tokens._
 import com.grooptown.mrjack.actions.{ActionDetails, ActionService}
+import com.grooptown.mrjack.ai.AIPlayer.buildNewPlayer
+import com.grooptown.mrjack.ai.AIService
 import com.grooptown.mrjack.board.Board
 import com.grooptown.mrjack.players.AlibiName.AlibiName
 import com.grooptown.mrjack.players._
@@ -15,9 +17,9 @@ import scala.collection.mutable.ListBuffer
 
 case class Game(
                  board: Board = Board.buildBoard(),
-                 var alibiCards: mutable.ListBuffer[AlibiCard],
+                 alibiCards: mutable.ListBuffer[AlibiCard],
                  turnTokens: mutable.ListBuffer[TurnToken],
-                 var actionTokens: mutable.ListBuffer[ActionToken],
+                 actionTokens: mutable.ListBuffer[ActionToken],
                  detectivePlayer: DetectivePlayer = DetectivePlayer(),
                  mrJackPlayer: MrJackPlayer = MrJackPlayer(),
                  var winner: Option[Player] = Option.empty,
@@ -89,6 +91,16 @@ case class Game(
     uuid
   }
 
+  def registerAIPlayer(aiLevel: String,
+                       isMrJack: Boolean): String = {
+    val uuid = registerPlayer("AI_" + isMrJack + "_" + aiLevel, isMrJack)
+    val aiPlayer = buildNewPlayer(aiLevel)
+    if (isMrJack) mrJackPlayer.aiBrain = aiPlayer
+    if (!isMrJack) detectivePlayer.aiBrain = aiPlayer
+    aiPlayer.launchAI(this, isMrJack)
+    uuid
+  }
+
   def isMrJackRegistered: Boolean = {
     secrets.values().asScala.exists(_.isMrJack)
   }
@@ -138,10 +150,17 @@ case class Game(
     playAction(askActionFromUserKeyboard)
   }
 
+  def playAIIfNecessary(): Unit = {
+    if (winner.isEmpty) return
+    if (isDetectiveCurrentPlayer && detectivePlayer.isAI) detectivePlayer.aiBrain.getNextMove(this)
+    if (!isDetectiveCurrentPlayer && mrJackPlayer.isAI) mrJackPlayer.aiBrain.getNextMove(this)
+  }
+
   def playAction(action: ActionDetails): Unit = {
     addActionPlayedToHistory(action)
     action.action.playAction(action.actionInput, this)
     action.actionToken.isUsed = true
+    handleActionPlayed()
   }
 
   def addActionPlayedToHistory(action: ActionDetails): Unit = {
@@ -208,7 +227,7 @@ case class Game(
 
   def hasSomeoneReachObjective: Boolean = detectiveHasReachObjectives || mrJackHasReachObjectives
 
-  def haveBothObjective: Boolean = detectiveHasReachObjectives || mrJackHasReachObjectives
+  def haveBothObjective: Boolean = detectiveHasReachObjectives && mrJackHasReachObjectives
 
   def detectiveHasReachObjectives: Boolean = detectivePlayer.hasReachObjective(this)
 
@@ -241,11 +260,13 @@ object Game {
   def clone(game: Game): Game = {
     game.copy(
       board = game.board.clone(),
-      mrJackPlayer = game.mrJackPlayer.copy(alibiCardsParam = game.mrJackPlayer.alibiCards.map(_.copy())),
-      detectivePlayer = game.detectivePlayer.copy(alibiCardsParam = game.mrJackPlayer.alibiCards.map(_.copy())),
+      mrJackPlayer = game.mrJackPlayer.copyPlayer,
+      detectivePlayer = game.detectivePlayer.copyPlayer,
       alibiCards = game.alibiCards.map(_.copy()),
       turnTokens = game.turnTokens.map(_.clone()),
-      actionTokens = game.actionTokens.map(_.copyToken)
+      actionTokens = game.actionTokens.map(_.copyToken),
+      winner = if (game.winner.isEmpty) Option.empty else Option.apply(game.winner.get.copyPlayer),
+      history = game.history.map(identity)
     )
   }
 }

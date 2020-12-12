@@ -19,4 +19,6 @@ case class DetectivePlayer(
   def getAlibiCards: Array[String] = alibiCards.map(_.name.toString).toArray
   
   override def printName: String =  "🕵 Detective "
+
+  override def copyPlayer: DetectivePlayer = DetectivePlayer(alibiCards.map(_.copy()))
 }

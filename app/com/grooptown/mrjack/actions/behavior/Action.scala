@@ -8,7 +8,7 @@ trait Action {
 
   def isValidAction(actionInput: ActionInput, game: Game): Boolean
 
-  def generatePossibleInputString: Array[String]
+  def generatePossibleInputString(game: Game): Array[String]
 
   def playAction(actionInput: ActionInput, game: Game): Unit
 
