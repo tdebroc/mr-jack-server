@@ -2,10 +2,12 @@ package com.grooptown.mrjack.players
 
 import com.grooptown.mrjack.game.Game
 
-import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 import scala.util.Random
 
-case class DetectivePlayer() extends Player {
+case class DetectivePlayer(
+                            var alibiCardsParam : ListBuffer[AlibiCard] = new ListBuffer[AlibiCard]
+                          ) extends Player(alibiCardsParam) {
   def launchTokenAction(game: Game): Unit = {
     game.actionTokens.foreach(_.isRecto = Random.nextInt() % 2 == 0)
   }

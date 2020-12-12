@@ -14,7 +14,7 @@ import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 case class Game(
-                 board: Board = new Board(),
+                 board: Board = Board.buildBoard(),
                  var alibiCards: mutable.ListBuffer[AlibiCard],
                  turnTokens: mutable.ListBuffer[TurnToken],
                  var actionTokens: mutable.ListBuffer[ActionToken],
@@ -237,4 +237,15 @@ object Game {
   def initTurnTokens(): ListBuffer[TurnToken] = ListBuffer.fill(MAX_TURN)(new TurnToken)
 
   def initAlibiCards(): ListBuffer[AlibiCard] = AlibiCard.initAlibiCards
+
+  def clone(game: Game): Game = {
+    game.copy(
+      board = game.board.clone(),
+      mrJackPlayer = game.mrJackPlayer.copy(alibiCardsParam = game.mrJackPlayer.alibiCards.map(_.copy())),
+      detectivePlayer = game.detectivePlayer.copy(alibiCardsParam = game.mrJackPlayer.alibiCards.map(_.copy())),
+      alibiCards = game.alibiCards.map(_.copy()),
+      turnTokens = game.turnTokens.map(_.clone()),
+      actionTokens = game.actionTokens.map(_.copyToken)
+    )
+  }
 }

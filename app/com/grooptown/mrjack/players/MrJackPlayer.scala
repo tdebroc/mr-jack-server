@@ -2,15 +2,19 @@ package com.grooptown.mrjack.players
 
 import com.grooptown.mrjack.game.Game
 
-case class MrJackPlayer(var alibiCard: AlibiCard = null) extends Player {
+import scala.collection.mutable.ListBuffer
 
-  override def hasReachObjective(game : Game): Boolean = countHourGlass() >= 6
+case class MrJackPlayer(var alibiCard: AlibiCard = null,
+                        var alibiCardsParam: ListBuffer[AlibiCard] = new ListBuffer[AlibiCard])
+  extends Player(alibiCardsParam) {
 
-  def swapActionsToken(game : Game) : Unit = {
+  override def hasReachObjective(game: Game): Boolean = countHourGlass() >= 6
+
+  def swapActionsToken(game: Game): Unit = {
     game.actionTokens.foreach(token => token.isRecto = if (token.isRecto) false else true)
   }
 
-  def countHourGlass() : Int = alibiCards.map(_.hourGlassCount).sum + turnTokens.length
+  def countHourGlass(): Int = alibiCards.map(_.hourGlassCount).sum + turnTokens.length
 
   override def printName: String = "\uD83D\uDD74 Mr Jack"
 }

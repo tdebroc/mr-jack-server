@@ -1,5 +1,6 @@
 package com.grooptown.mrjack.board
 
+import com.grooptown.mrjack.board.Board.{BOARD_WITH, detectivePositions}
 import com.grooptown.mrjack.board.Cell.CELL_WIDTH
 import com.grooptown.mrjack.board.DetectiveName.DetectiveName
 import com.grooptown.mrjack.board.Orientation.{EAST, NORTH, SOUTH, WEST}
@@ -13,56 +14,7 @@ import scala.collection.mutable.ListBuffer
 import scala.util.Random
 import scala.util.control.Breaks.{break, breakable}
 
-class Board {
-
-  val BOARD_WITH = 5
-  var detectiveCells: ListBuffer[Cell] = new ListBuffer[Cell]
-  val detectivePositions: Array[Position] = Array(
-    Position(0, 1), Position(0, 2), Position(0, 3), // TOP
-    Position(1, 4), Position(2, 4), Position(3, 4), // RIGHT
-    Position(4, 3), Position(4, 2), Position(4, 1), // BOTTOM
-    Position(3, 0), Position(2, 0), Position(1, 0) // LEFT
-  )
-  val cells: Array[Array[Cell]] = initBoard()
-
-  def initBoard(): Array[Array[Cell]] = {
-    val cells = ofDim[Cell](BOARD_WITH, BOARD_WITH)
-    for {
-      line <- cells.indices
-      col <- cells.indices
-    } {
-      cells(line)(col) = Cell(apply(ListBuffer()), empty)
-    }
-
-    val alibis = Random.shuffle(AlibiName.values.toList).toIterator
-
-    cells(1)(0) = Cell(apply(ListBuffer(DetectiveToken(DetectiveName.SHERLOCK))), empty)
-    cells(1)(4) = Cell(apply(ListBuffer(DetectiveToken(DetectiveName.WATSON))), empty)
-    cells(4)(2) = Cell(apply(ListBuffer(DetectiveToken(DetectiveName.TOBBY))), empty)
-    List(1, 2, 3).foreach(line => {
-      List(1, 2, 3).foreach(col => {
-        if (line == 2 && col == 2) {
-          cells(line)(col) = getNewDistrict(LESTRADE)
-        } else {
-          var alibi = alibis.next()
-          if (alibi.equals(LESTRADE)) {
-            alibi = alibis.next()
-          }
-          cells(line)(col) = getNewDistrict(alibi)
-        }
-      })
-    })
-    cells(1)(1).district.get.orientation = WEST
-    cells(1)(3).district.get.orientation = EAST
-    cells(3)(2).district.get.orientation = SOUTH
-    // cells(2)(2).district.get.isCross = true
-    detectivePositions.foreach(pos => detectiveCells += cells(pos.line)(pos.col))
-    cells
-  }
-
-  def getNewDistrict(value: AlibiName.Value): Cell = {
-    Cell(empty, apply(District(value, Orientation.getRandomOrientation)))
-  }
+case class Board(cells: Array[Array[Cell]]) {
 
   def printBoard(): Unit = {
     val chars = ofDim[Char](CELL_WIDTH * BOARD_WITH, CELL_WIDTH * BOARD_WITH)
@@ -85,6 +37,8 @@ class Board {
     })
   }
 
+  def getDetectiveCells: Array[Cell] = detectivePositions.map(pos => cells(pos.line)(pos.col))
+
   def getDistricts: ListBuffer[District] = {
     val districts = new ListBuffer[District]
     for {boardLine <- 1 to 3; boardCol <- 1 to 3}
@@ -100,6 +54,7 @@ class Board {
 
   def moveDetective(detectiveName: DetectiveName, moveCount: Int): Unit = {
     val tokenToFind = DetectiveToken(detectiveName)
+    val detectiveCells = getDetectiveCells
     val initialCell = detectiveCells.filter(cell => cell.detectives.get.contains(tokenToFind)).head
     val cellIndex = detectiveCells.indexOf(initialCell)
     val nextCellIndex = (cellIndex + moveCount) % detectiveCells.length
@@ -153,10 +108,79 @@ class Board {
   }
 
   def getCells: Array[Array[Cell]] = cells
+
+  override def clone(): Board = {
+    val cells = ofDim[Cell](BOARD_WITH, BOARD_WITH)
+    for {
+      line <- cells.indices
+      col <- cells.indices
+    } {
+      val cell = this.cells(line)(col)
+      cells(line)(col) = cell.copy(
+        if (cell.detectives.isEmpty) empty else apply(cell.detectives.get.map(_.copy())),
+        if (cell.district.isEmpty) empty else apply(cell.district.get.copy()),
+      )
+    }
+    Board(cells)
+  }
 }
 
 object Board {
+
+  val BOARD_WITH = 5
+
   def districtIdToPosition(districtId: Int): Position = {
     Position(1 + districtId / 3, 1 + districtId % 3)
   }
+  def buildBoard(): Board = {
+    val cells = initCells()
+    new Board(
+      cells = cells
+    )
+  }
+
+  def initCells(): Array[Array[Cell]] = {
+    val cells = ofDim[Cell](BOARD_WITH, BOARD_WITH)
+    for {
+      line <- cells.indices
+      col <- cells.indices
+    } {
+      cells(line)(col) = Cell(Option.apply(ListBuffer()), empty)
+    }
+
+    val alibis = Random.shuffle(AlibiName.values.toList).toIterator
+
+    cells(1)(0) = Cell(Option.apply(ListBuffer(DetectiveToken(DetectiveName.SHERLOCK))), empty)
+    cells(1)(4) = Cell(Option.apply(ListBuffer(DetectiveToken(DetectiveName.WATSON))), empty)
+    cells(4)(2) = Cell(Option.apply(ListBuffer(DetectiveToken(DetectiveName.TOBBY))), empty)
+    List(1, 2, 3).foreach(line => {
+      List(1, 2, 3).foreach(col => {
+        if (line == 2 && col == 2) {
+          cells(line)(col) = getNewDistrict(LESTRADE)
+        } else {
+          var alibi = alibis.next()
+          if (alibi.equals(LESTRADE)) {
+            alibi = alibis.next()
+          }
+          cells(line)(col) = getNewDistrict(alibi)
+        }
+      })
+    })
+    cells(1)(1).district.get.orientation = WEST
+    cells(1)(3).district.get.orientation = EAST
+    cells(3)(2).district.get.orientation = SOUTH
+    cells
+  }
+
+
+  def getNewDistrict(value: AlibiName.Value): Cell = {
+    Cell(empty, Option.apply(District(value, Orientation.getRandomOrientation)))
+  }
+
+  val detectivePositions: Array[Position] = Array(
+    Position(0, 1), Position(0, 2), Position(0, 3), // TOP
+    Position(1, 4), Position(2, 4), Position(3, 4), // RIGHT
+    Position(4, 3), Position(4, 2), Position(4, 1), // BOTTOM
+    Position(3, 0), Position(2, 0), Position(1, 0) // LEFT
+  )
 }

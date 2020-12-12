@@ -62,8 +62,8 @@ class WitnessCallTesting {
 
   @Test def playTurn1(): Unit = {
     val game: Game = Game.buildNewGame
+    game.initGame()
     game.board.printBoard()
-    println("MrJack is " + game.mrJackPlayer.alibiCard + " : " + game.mrJackPlayer.alibiCard.asChar)
     game.initTurn()
     val action1 = ActionDetails(isValid = true, null, AlibiCardAction, null, new SherlockAlibiToken)
     action1.action.playAction(action1.actionInput, game)
@@ -81,7 +81,7 @@ class WitnessCallTesting {
     game.board.printBoard()
     // game.playTurn()
 
-    val game2 = game.copy()
+    val game2: Game = Game.clone(game)
     print(game2.history)
 
   }

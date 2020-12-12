@@ -115,7 +115,7 @@ export class HomeComponent implements OnInit {
 
   refreshUI() {
     if (this.isCurrentGameDefined()) {
-      this.dataService.refreshCurrentGame(this.getCurrentGameId())
+      this.dataService.refreshCurrentGame(this.getCurrentGameId(), undefined, true)
     }
     setTimeout(this.refreshUI.bind(this), 1500)
   }

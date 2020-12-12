@@ -13,6 +13,8 @@ GET  /game/:gameId                   controllers.GameController.getGame(gameId: 
 
 GET  /game/:gameId/secret            controllers.GameController.getSecret(gameId: String, secretId: String)
 
+GET  /game/:gameId/clone             controllers.GameController.cloneGame(gameId: String)
+
 POST /playAction                     controllers.GameController.playAction(secretId: String)
 
 POST /register                       controllers.GameController.registerToGame

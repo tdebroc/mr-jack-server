@@ -40,19 +40,24 @@ export class DataServiceService {
       });
   }
 
-  refreshCurrentGame(gameId: string, callback: undefined | (() => void) = undefined) {
+  refreshCurrentGame(gameId: string,
+                     callback: undefined | (() => void) = undefined,
+                     shouldRefresh = false) {
     this.http.get(this.getUrlPrefix() + '/game/' + gameId)
       .subscribe((data: any) => {
-        if (this.areEquals(this.currentGame, data)) return;
+        if (this.areEquals(this.currentGame, data) && gameId === this.currentGameId) return;
         Notification.requestPermission(function () {
 
         }).then(() => {
-          new Notification("Game changed !", {body: "User has played !"});
+          if (shouldRefresh) {
+            new Notification("Game changed !", {body: "User has played !"});
+          }
           console.log("Notification Permission granted.")
         })
 
         this.currentGame = data;
         this.currentGameId = gameId;
+        console.log(this.currentGameId, gameId)
         this.refreshSecrets(gameId)
         console.log("Current Game is ", this.currentGame)
         if (callback) callback()

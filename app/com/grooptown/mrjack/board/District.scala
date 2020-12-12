@@ -6,12 +6,13 @@ import com.grooptown.mrjack.players.AlibiName
 import com.grooptown.mrjack.players.AlibiName.AlibiName
 
 case class District(name: AlibiName,
-               var orientation: Orientation) {
+                    var orientation: Orientation) {
   var isRecto: Boolean = true
   var isCross: Boolean = false
   var isAlreadyRotated: Boolean = false
 
   def getOrientationAsString: String = orientation.toString
+
   def getAlibiNameAsString: String = name.toString
 
   def forPrinting(): Array[Array[Char]] = {
@@ -39,6 +40,7 @@ case class District(name: AlibiName,
     }
   }
 }
+
 object District {
   val districtIdToName = Map(
     0 -> "Top-Left",

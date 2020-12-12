@@ -2,8 +2,10 @@ package controllers
 
 import com.fasterxml.jackson.databind._
 import com.grooptown.mrjack.actions.ActionService
+import com.grooptown.mrjack.game.GameService
 import com.grooptown.mrjack.game.GameService._
 import controllers.model.{MessageResponse, MoveRequest, RegisterRequest, SecretResponse}
+
 import javax.inject._
 import play.api.libs.json.JsValue
 import play.api.mvc._
@@ -22,6 +24,11 @@ class GameController @Inject()(cc: ControllerComponents) extends AbstractControl
   }
 
   def getGames: mvc.Result = play.mvc.Results.ok(stringify(games))
+
+  def cloneGame(gameId: String): mvc.Result = {
+    if (!games.containsKey(gameId)) NotFound("Game is not found : " + gameId)
+    play.mvc.Results.ok(stringify(GameService.cloneGame(gameId)))
+  }
 
   def getGame(gameId: String): mvc.Result = {
     if (!games.containsKey(gameId)) NotFound("Game is not found : " + gameId)
