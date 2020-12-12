@@ -6,7 +6,7 @@ import com.grooptown.mrjack.board.DetectiveName.{SHERLOCK, TOBBY}
 import com.grooptown.mrjack.board.DetectiveToken
 import com.grooptown.mrjack.board.Orientation.{EAST, NORTH, SOUTH, WEST}
 import com.grooptown.mrjack.game.Game
-import com.grooptown.mrjack.players.{AlibiName, DetectivePlayer}
+import com.grooptown.mrjack.players.AlibiName
 import org.junit.Test
 
 
@@ -28,6 +28,7 @@ class WitnessCallTesting {
 
     game.board.printBoard()
     val mrJack = game.board.cells(3)(1).district.get.name
+
     println("MrJack " + AlibiName.toChar(mrJack))
     game.witnessCall(mrJack)
     game.board.printBoard()

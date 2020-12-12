@@ -380,7 +380,6 @@ export class HomeComponent implements OnInit {
         this.positionDistrictSelect1 = undefined
         this.positionDistrictSelect2 = undefined
         this.rotateDistrictPosition = undefined
-        new Notification("Action Done", {body: "User has played"});
         if (callback) callback(data)
       })
   }

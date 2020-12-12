@@ -5,7 +5,7 @@ import com.grooptown.mrjack.game.Game
 object Main {
 /*
   def main(args: Array[String]): Unit = {
-    val game: Game = new Game
+    val game: Game = Game.buildNewGame
     game.playGame()
   }*/
 }

@@ -44,6 +44,13 @@ export class DataServiceService {
     this.http.get(this.getUrlPrefix() + '/game/' + gameId)
       .subscribe((data: any) => {
         if (this.areEquals(this.currentGame, data)) return;
+        Notification.requestPermission(function () {
+
+        }).then(() => {
+          new Notification("Game changed !", {body: "User has played !"});
+          console.log("Notification Permission granted.")
+        })
+
         this.currentGame = data;
         this.currentGameId = gameId;
         this.refreshSecrets(gameId)

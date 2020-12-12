@@ -195,11 +195,12 @@ case class Game(
   def findWinner(): Option[Player] = {
     if (timeEnded() && !checkIfMrJackVisible) return Option.apply(mrJackPlayer)
     if (haveBothObjective && checkIfMrJackVisible) return Option.apply(detectivePlayer)
-    if (mrJackHasReachObjectives) return Option.apply(mrJackPlayer)
-    if (detectiveHasReachObjectives) return Option.apply(detectivePlayer)
     if (haveBothObjective) {
       addMessageToHistory("Both have reach their objectives, we are in Chase Mode ! MrJack must stay unseen until Turn 8 to win.")
+      return Option.empty
     }
+    if (mrJackHasReachObjectives) return Option.apply(mrJackPlayer)
+    if (detectiveHasReachObjectives) return Option.apply(detectivePlayer)
     Option.empty
   }
 
