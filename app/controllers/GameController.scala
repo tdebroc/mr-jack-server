@@ -2,48 +2,47 @@ package controllers
 
 import com.fasterxml.jackson.databind._
 import com.grooptown.mrjack.actions.ActionService
-import com.grooptown.mrjack.ai.AIService
 import com.grooptown.mrjack.game.GameService
 import com.grooptown.mrjack.game.GameService._
-import controllers.model.{MessageResponse, MoveRequest, RegisterRequest, RegisterRequestAI, SecretResponse}
-
-import javax.inject._
+import controllers.model._
 import play.api.libs.json.JsValue
 import play.api.mvc._
 import play.mvc
+import play.mvc.Results.{notFound, ok}
+
+import javax.inject._
 
 @Singleton
 class GameController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
   val mapper: ObjectMapper = new ObjectMapper()
+
+  createGame
 
   def stringify(obj: Object): String = mapper.writeValueAsString(obj)
 
   def createGame: mvc.Result = {
     val gameId = addGame()
     games.get(gameId).initGame()
-    play.mvc.Results.ok(stringify(gameId))
+    ok(stringify(gameId))
   }
 
-  def getGames: mvc.Result = play.mvc.Results.ok(stringify(games))
+  def getGames: mvc.Result = ok(stringify(games))
 
   def cloneGame(gameId: String): mvc.Result = {
     if (!games.containsKey(gameId)) NotFound("Game is not found : " + gameId)
-    play.mvc.Results.ok(stringify(GameService.cloneGame(gameId)))
+    ok(stringify(GameService.cloneGame(gameId)))
   }
 
   def getGame(gameId: String): mvc.Result = {
     if (!games.containsKey(gameId)) NotFound("Game is not found : " + gameId)
-    play.mvc.Results.ok(stringify(games.get(gameId)))
+    ok(stringify(games.get(gameId)))
   }
 
   def playAction(secretId: String): Action[AnyContent] = Action { request: Request[AnyContent] =>
     val moveRequest: JsValue = request.body.asJson.get
     val move = MoveRequest(moveRequest("gameId").as[String], moveRequest("action").as[String])
     val game = games.get(move.gameId)
-    var moveAction = move.action
-    if (moveAction.startsWith("AI_")) {
-      moveAction = AIService.getNextAiMoveFromUserInput(moveAction, game)
-    }
+    val moveAction = move.action
     val actionDetails = ActionService.getActionDetails(game, moveAction)
     if (!game.isAuthorizedToPlay(secretId)) {
       Forbidden("You can't play, this is not your turn.")
@@ -98,9 +97,9 @@ class GameController @Inject()(cc: ControllerComponents) extends AbstractControl
   }
 
   def getSecret(gameId: String, secretId: String): mvc.Result = {
-    if (!games.containsKey(gameId)) NotFound("Game is not found : " + gameId)
-    if (!games.get(gameId).secrets.containsKey(secretId)) NotFound("Player is not found : " + secretId)
-    play.mvc.Results.ok(stringify(games.get(gameId).secrets.get(secretId)))
+    if (!games.containsKey(gameId)) notFound("Game is not found : " + gameId)
+    else if (!games.get(gameId).secrets.containsKey(secretId)) notFound("Player is not found : " + secretId)
+    else ok(stringify(games.get(gameId).secrets.get(secretId)))
   }
 
   def sendOk(): Result = {

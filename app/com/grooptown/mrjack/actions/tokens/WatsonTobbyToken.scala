@@ -8,5 +8,5 @@ case class WatsonTobbyToken(
                            ) extends ActionToken(isRectoParam, isUsedParam) {
   override def getCurrentAction: Action = if (isRecto) MoveWatsonAction else MoveTobbyAction
 
-  override def copyToken: ActionToken = JokerRotateToken(this.isRecto, this.isUsed)
+  override def copyToken: ActionToken = WatsonTobbyToken(this.isRecto, this.isUsed)
 }

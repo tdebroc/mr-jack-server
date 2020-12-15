@@ -1,16 +1,15 @@
 package com.grooptown.mrjack.game
 
-import java.util
-import java.util.UUID.randomUUID
 import com.grooptown.mrjack.actions.tokens._
 import com.grooptown.mrjack.actions.{ActionDetails, ActionService}
 import com.grooptown.mrjack.ai.AIPlayer.buildNewPlayer
-import com.grooptown.mrjack.ai.AIService
 import com.grooptown.mrjack.board.Board
 import com.grooptown.mrjack.players.AlibiName.AlibiName
 import com.grooptown.mrjack.players._
 
+import java.util
 import java.util.Date
+import java.util.UUID.randomUUID
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -49,6 +48,8 @@ case class Game(
   def getTurnNumber: Int = Math.abs(turnTokens.length - Game.MAX_TURN)
 
   def countUnusedToken(): Int = actionTokens.count(!_.isUsed)
+
+  def getUnusedTokens: mutable.Seq[ActionToken] = actionTokens.filter(!_.isUsed)
 
   def isDetectiveCurrentPlayer: Boolean = isEvenTurn && (countUnusedToken() == 4 || countUnusedToken() == 1) ||
     !isEvenTurn && (countUnusedToken() == 2 || countUnusedToken() == 3)
@@ -94,10 +95,10 @@ case class Game(
   def registerAIPlayer(aiLevel: String,
                        isMrJack: Boolean): String = {
     val uuid = registerPlayer("AI_" + isMrJack + "_" + aiLevel, isMrJack)
-    val aiPlayer = buildNewPlayer(aiLevel)
+    val aiPlayer = buildNewPlayer(aiLevel, isMrJack)
     if (isMrJack) mrJackPlayer.aiBrain = aiPlayer
     if (!isMrJack) detectivePlayer.aiBrain = aiPlayer
-    aiPlayer.launchAI(this, isMrJack)
+    aiPlayer.launchAI(this)
     uuid
   }
 
@@ -134,7 +135,7 @@ case class Game(
     witnessCall(mrJackPlayer.alibiCard.name)
   }
 
-  def handleActionPlayed() {
+  def handleEndOfTurn() {
     if (countUnusedToken() != 0) return
     witnessCall(mrJackPlayer.alibiCard.name)
     winner = findWinner()
@@ -156,11 +157,11 @@ case class Game(
     if (!isDetectiveCurrentPlayer && mrJackPlayer.isAI) mrJackPlayer.aiBrain.getNextMove(this)
   }
 
-  def playAction(action: ActionDetails): Unit = {
+  def playAction(action: ActionDetails, shouldHandleEndOfTurn: Boolean = true): Unit = {
     addActionPlayedToHistory(action)
     action.action.playAction(action.actionInput, this)
     action.actionToken.isUsed = true
-    handleActionPlayed()
+    if (shouldHandleEndOfTurn) handleEndOfTurn()
   }
 
   def addActionPlayedToHistory(action: ActionDetails): Unit = {
@@ -190,7 +191,7 @@ case class Game(
 
   def witnessCall(mrJackName: AlibiName): Unit = {
     val visibleCells = board.calculateVisibleCellsFromAllDetective
-    println(visibleCells.map(c => c.forPrinting(true)).mkString("Array(", ", ", ")"))
+    // println("Visible cells: " + visibleCells.map(c => c.forPrinting(true)).mkString("Array(", ", ", ")"))
     val isMrJackVisible = visibleCells.exists(_.district.get.name == mrJackName)
     addMessageToHistory("Witness call: MrJack is " + (if (isMrJackVisible) "" else "not") + " visible")
     if (isMrJackVisible) {

@@ -4,7 +4,7 @@ import com.grooptown.mrjack.game.Game
 
 import java.util.Date
 
-class AIThread(aiPlayer: AIPlayer, game: Game, isMrJack: Boolean) extends Runnable {
+class AIThread(aiPlayer: AIPlayer, game: Game) extends Runnable {
 
   def run() {
     var gameOn = true
@@ -22,7 +22,7 @@ class AIThread(aiPlayer: AIPlayer, game: Game, isMrJack: Boolean) extends Runnab
   }
 
   def shouldAIPlay(): Boolean = {
-    game.isDetectiveCurrentPlayer && !isMrJack || !game.isDetectiveCurrentPlayer && isMrJack
+    game.isDetectiveCurrentPlayer && !aiPlayer.isPlayerMrJack || !game.isDetectiveCurrentPlayer && aiPlayer.isPlayerMrJack
   }
 
 }

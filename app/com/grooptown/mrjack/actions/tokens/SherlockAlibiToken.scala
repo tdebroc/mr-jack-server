@@ -8,5 +8,5 @@ case class SherlockAlibiToken(
                              ) extends ActionToken(isRectoParam, isUsedParam) {
   override def getCurrentAction: Action = if (isRecto) MoveSherlockAction else AlibiCardAction
 
-  override def copyToken: ActionToken = JokerRotateToken(this.isRecto, this.isUsed)
+  override def copyToken: ActionToken = SherlockAlibiToken(this.isRecto, this.isUsed)
 }

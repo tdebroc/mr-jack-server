@@ -8,5 +8,5 @@ case class SwapRotateToken(
                           ) extends ActionToken(isRectoParam, isUsedParam) {
   override def getCurrentAction: Action = if (isRecto) SwapDistrictAction else RotateAction
 
-  override def copyToken: ActionToken = JokerRotateToken(this.isRecto, this.isUsed)
+  override def copyToken: ActionToken = SwapRotateToken(this.isRecto, this.isUsed)
 }

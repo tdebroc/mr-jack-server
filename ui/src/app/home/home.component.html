@@ -61,7 +61,7 @@
         We have Winner ! And winner is ... {{this.getCurrentGame().winner}}
       </div>
       <div>
-        History: <span (click)="playAILevel0()" class="pointer">0</span>
+        History:
         <div *ngFor="let historyLine of this.getCurrentGame().history.slice().reverse()">
           {{historyLine}}
         </div>
@@ -86,6 +86,12 @@
       <button mat-raised-button color="primary"
               *ngIf="!getCurrentGame().mrJackRegistered"
               (click)="registerAIPlayer('0', true)">MrJack as AI Random</button>
+      <button mat-raised-button color="primary"
+              *ngIf="!getCurrentGame().detectiveRegistered"
+              (click)="registerAIPlayer('1', false)">Detective as AI Level 1</button>
+      <button mat-raised-button color="primary"
+              *ngIf="!getCurrentGame().mrJackRegistered"
+              (click)="registerAIPlayer('1', true)">MrJack as AI Level 1</button>
     </div>
     <fieldset class="current-player-panel" *ngIf="amIMrJack() || amIDetective()">
       Your are:<br>
@@ -120,7 +126,7 @@
       </div>
     </fieldset>
     <br/>
-    <fieldset class="actions-panel" *ngIf="!isEnded() && isGameStarted()">
+    <fieldset class="players-panel" *ngIf="isGameStarted()">
       <fieldset id="mrJack-panel">
         MrJack has {{countMrJackHourGlasses()}} hourGlasses
         <span *ngIf="!amIMrJack()">and maybe more with alibi Cards</span>
