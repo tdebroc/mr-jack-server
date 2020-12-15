@@ -35,7 +35,7 @@ export class DataServiceService {
 
   createGame() {
     this.http.post(this.getUrlPrefix() + '/game', {})
-      .subscribe((gameId: string) => {
+      .subscribe((gameId: any) => {
         console.log("Game created : " + gameId)
         this.refreshCurrentGame(gameId)
         this.loadGames()
