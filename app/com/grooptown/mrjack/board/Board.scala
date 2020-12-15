@@ -47,7 +47,6 @@ case class Board(cells: Array[Array[Cell]]) {
   }
 
   def innocentAlibi(name: AlibiName): Unit = {
-    println("We innocent " + name)
     val district = getDistricts.filter(_.name == name).head
     district.reverseDistrict()
   }
