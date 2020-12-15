@@ -29,8 +29,7 @@ case class SmartAI(isMrJackVal: Boolean) extends AIPlayer(isMrJackVal) {
     } else if (maximizeAction) {
       getAllChildrenGame(game).map(minMax(_, depth - 1, maximizeAction = false)).max
     } else {
-      val children = getAllChildrenGame(game)
-      children.map(minMax(_, depth - 1, maximizeAction = true)).min
+      getAllChildrenGame(game).map(minMax(_, depth - 1, maximizeAction = true)).min
     }
   }
 
