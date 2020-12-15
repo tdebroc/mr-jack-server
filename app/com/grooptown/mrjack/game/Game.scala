@@ -252,7 +252,11 @@ object Game {
     )
   }
 
-  def initActionsToken(): ListBuffer[ActionToken] = ListBuffer(new JokerRotateToken, new SherlockAlibiToken, new SwapRotateToken, new WatsonTobbyToken)
+  def initActionsToken(): ListBuffer[ActionToken] = ListBuffer(
+    new JokerRotateToken,
+    new SherlockAlibiToken,
+    new SwapRotateToken,
+    new WatsonTobbyToken)
 
   def initTurnTokens(): ListBuffer[TurnToken] = ListBuffer.fill(MAX_TURN)(new TurnToken)
 

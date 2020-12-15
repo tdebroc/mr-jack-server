@@ -13,7 +13,8 @@ object GameEvaluator {
 
   def evaluateGameHigherIsForDetective(game: Game): Int = {
     if (game.winner.nonEmpty) {
-      if (game.winner.get.getClass.equals(DetectivePlayer.getClass)) return 1*1000*1000 else return - 1*1000*1000
+      // Be careful if you want to replace by equals on .getClass => It works badly with $ at the end for one of them ...
+      if ((new DetectivePlayer).printName.equals(game.winner.get.printName)) return 1*1000*1000 else return - 1*1000*1000
     }
     game.board.getDistricts.count(!_.isRecto) * 10 * 1000
 

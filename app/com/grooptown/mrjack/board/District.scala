@@ -6,10 +6,12 @@ import com.grooptown.mrjack.players.AlibiName
 import com.grooptown.mrjack.players.AlibiName.AlibiName
 
 case class District(name: AlibiName,
-                    var orientation: Orientation) {
-  var isRecto: Boolean = true
-  var isCross: Boolean = false
-  var isAlreadyRotated: Boolean = false
+                    var orientation: Orientation,
+                    var isRecto: Boolean = true,
+                    var isCross: Boolean = false,
+                    var isAlreadyRotated: Boolean = false,
+                   ) {
+
 
   def getOrientationAsString: String = orientation.toString
 

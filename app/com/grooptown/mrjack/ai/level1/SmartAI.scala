@@ -15,6 +15,7 @@ case class SmartAI(isMrJackVal: Boolean) extends AIPlayer(isMrJackVal) {
   }
 
   def calculateMoveScore(game: Game, moves: List[String]): MoveAndScore = {
+    println("Calculating for move: "+ moves.head)
     val newGame = PossibilityPlayer.playPossibility(game, moves, this)
     val currentScore = minMax(newGame, tokenCountToDepth(game.countUnusedToken()), maximizeAction = false)
     println("For move" + moves.head + " score is : " + currentScore)

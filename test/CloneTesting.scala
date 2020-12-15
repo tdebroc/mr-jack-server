@@ -13,7 +13,9 @@ class CloneTesting {
     val game: Game = Game.buildNewGame
     game.initGame()
     game.board.cells(1)(1).district.get.orientation = WEST
+    game.board.cells(1)(1).district.get.isRecto = false
     game.board.cells(1)(2).district.get.orientation = SOUTH
+    game.board.cells(1)(2).district.get.isRecto = false
     game.board.cells(1)(3).district.get.orientation = EAST
     game.board.cells(2)(1).district.get.orientation = EAST
     // game.board.cells(2)(2).district.get.orientation = EAST
@@ -35,6 +37,8 @@ class CloneTesting {
     game.actionTokens.head.isUsed = true
     val gameCloned = Game.clone(game)
     assert(gameCloned.actionTokens.head.isUsed)
+    assert(!gameCloned.board.cells(1)(1).district.get.isRecto)
+    assert(!gameCloned.board.cells(1)(2).district.get.isRecto)
 
   }
 
