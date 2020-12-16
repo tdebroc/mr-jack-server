@@ -53,6 +53,6 @@ object District {
     5 -> "Middle-Right",
     6 -> "Bottom-Left",
     7 -> "Bottom-Middle",
-    8 -> "Bottom-Left"
+    8 -> "Bottom-Right"
   )
 }

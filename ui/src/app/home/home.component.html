@@ -29,7 +29,10 @@
             <img
               class="bonus-detective-token pointer"
               [ngClass]="{'detective-middle-vertical' : colIndex === 0 || colIndex === 4,
-                               'detective-middle-horizontal' : lineIndex === 0 || lineIndex === 4}"
+                          'detective-middle-horizontal' : lineIndex === 0 || lineIndex === 4,
+                          'detective-middle-vertical-moreThan1' : (colIndex === 0 || colIndex === 4) && cell.detectives.length >= 1,
+                          'detective-middle-horizontal-moreThan1' : (lineIndex === 0 || lineIndex === 4) && cell.detectives.length >= 1
+                               }"
               src="assets/images/tokens/{{getBonusDetective(lineIndex, colIndex).name.toUpperCase()}}.png"
               alt="{{getBonusDetective(lineIndex, colIndex).name.toUpperCase()}}"
               (click)="playMoveDetective(getBonusDetective(lineIndex, colIndex))"/>
@@ -69,7 +72,13 @@
     </div>
   </div>
   <div *ngIf="isCurrentGameDefined()">
-    <h2>Turn: {{ getCurrentGame().turnNumber}}</h2>
+    <h2>
+      Turn: {{ getCurrentGame().turnNumber}}
+      <button mat-raised-button color="primary" (click)="backInHistory()"
+              [disabled]="!shouldDisplayBackHistory()"> < </button>&nbsp;
+      <button mat-raised-button color="primary" (click)="upInHistory()"
+              [disabled]="isAtLastHistory()"> > </button>
+    </h2>
     <div *ngIf="!isGameStarted()">
       You can register here, by clicking on the player you want to play:<br/>
       <img src="assets/images/players/detectives.png" class="player-register pointer"
@@ -82,16 +91,16 @@
            alt="mrJack">
       <button mat-raised-button color="primary"
               *ngIf="!getCurrentGame().detectiveRegistered"
-              (click)="registerAIPlayer('0', false)">Detective as AI Random</button>
+              (click)="registerAIPlayer('0', false)">Detective as stupid AI Random</button>
       <button mat-raised-button color="primary"
               *ngIf="!getCurrentGame().mrJackRegistered"
-              (click)="registerAIPlayer('0', true)">MrJack as AI Random</button>
+              (click)="registerAIPlayer('0', true)">MrJack as stupid hourGlassAI Random</button>
       <button mat-raised-button color="primary"
               *ngIf="!getCurrentGame().detectiveRegistered"
-              (click)="registerAIPlayer('1', false)">Detective as AI Level 1</button>
+              (click)="registerAIPlayer('1', false)">Detective as smarter AI</button>
       <button mat-raised-button color="primary"
               *ngIf="!getCurrentGame().mrJackRegistered"
-              (click)="registerAIPlayer('1', true)">MrJack as AI Level 1</button>
+              (click)="registerAIPlayer('1', true)">MrJack as smarter AI</button>
     </div>
     <fieldset class="current-player-panel" *ngIf="amIMrJack() || amIDetective()">
       Your are:<br>

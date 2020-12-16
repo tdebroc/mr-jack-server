@@ -33,10 +33,10 @@
   height: 54px;
 }
 .detective-token {
-  width: 50px;
+  width: 45px;
 }
 .bonus-detective-token {
-  width: 50px;
+  width: 45px;
   opacity: 0.7;
 }
 .cell-district {
@@ -75,10 +75,10 @@
   transform: rotate(0deg);
 }
 .detective-middle-vertical {
-  margin-top: 50px;
+  margin-top: 45px;
 }
 .detective-middle-horizontal {
-  margin-left: 50px;
+  margin-left: 45px;
 }
 .detective-middle-vertical-moreThan1 {
   margin-top: 0;
@@ -127,3 +127,9 @@
   height: 650px;
   overflow: scroll;
 }
+
+#sub-board-panel {
+  height: 230px;
+  overflow: scroll;
+}
+

@@ -34,4 +34,5 @@ export class Game {
   detectiveRegistered: boolean = false;
   mrJackRegistered: boolean = false;
   history: String[] = [];
+  games: Game[] = [];
 }

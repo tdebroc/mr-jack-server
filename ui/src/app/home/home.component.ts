@@ -66,6 +66,7 @@ export class HomeComponent implements OnInit {
 
   getCurrentGame() {
     if (!this.dataService.currentGame) throw 'Game can\'t be null';
+    if (typeof this.historyIndex !== "undefined") return this.dataService.currentGame.games[this.historyIndex]
     return this.dataService.currentGame;
   }
 
@@ -144,6 +145,10 @@ export class HomeComponent implements OnInit {
   // ===================================================================================================
 
   clickToken(actionName: string) {
+    if (typeof this.historyIndex !== "undefined") {
+      alert("You can't play while looking at history. You have to go back to last action.")
+      return;
+    }
     this.currentAction = actionName;
     console.log("Playing: " + this.currentAction)
     if (this.isMovingDetectiveAction()) {
@@ -154,10 +159,12 @@ export class HomeComponent implements OnInit {
   }
 
   selectGame(gameKey: string) {
+    this.historyIndex = undefined;
     this.dataService.refreshCurrentGame(gameKey)
   }
 
   selectFirstGame() {
+    this.historyIndex = undefined;
     let firstKey = Object.keys(this.dataService.getGames())[Object.keys(this.dataService.getGames()).length - 1]
     this.selectGame(firstKey)
   }
@@ -413,8 +420,48 @@ export class HomeComponent implements OnInit {
   }
 
 
-  playAILevel0() {
-    this.sendAction("AI_0")
+  // ===================================================================================================
+  // = History
+  // ===================================================================================================
+
+  historyIndex: undefined|number = undefined
+
+  initIfNeeded() {
+    if (typeof this.historyIndex === "undefined" && this.dataService.currentGame) {
+      this.historyIndex = this.dataService.currentGame.games.length - 1
+    }
+  }
+
+  isAtLastHistory() {
+    return this.dataService.currentGame && this.historyIndex === this.dataService.currentGame.games.length - 1
+      || typeof this.historyIndex === "undefined"
+  }
+  isAtFirstHistory() {
+    return this.historyIndex === 0
+  }
+
+  upInHistory() {
+    this.initIfNeeded()
+    if (!this.dataService.currentGame) {
+      return;
+    }
+    if (!this.isAtLastHistory()) {
+      this.historyIndex++;
+    }
+    if (this.isAtLastHistory()) {
+      this.historyIndex = undefined;
+    }
+  }
+
+  backInHistory() {
+    this.initIfNeeded()
+    if (!this.isAtFirstHistory()) {
+      this.historyIndex--;
+    }
+  }
+
+  shouldDisplayBackHistory() {
+    return this.historyIndex !== 0 && this.dataService.currentGame && this.dataService.currentGame.games.length !== 0
   }
 }
 
