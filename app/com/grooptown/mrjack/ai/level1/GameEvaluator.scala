@@ -27,7 +27,6 @@ object GameEvaluator {
       score -= (game.mrJackPlayer.countHourGlass() * 1.3 * SECOND_FACTOR).toInt
     }
     score += 1000 * countOpenAngles(game)
-    println("Score is: " + score)
     score
   }
 

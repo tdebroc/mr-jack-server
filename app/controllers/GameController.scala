@@ -57,6 +57,8 @@ class GameController @Inject()(cc: ControllerComponents) extends AbstractControl
   def registerToGame: Action[AnyContent] = Action {
     request: Request[AnyContent] =>
       val registerRequest: JsValue = request.body.asJson.get
+      val remote = request.remoteAddress
+      println("Player " + remote)
       val register = RegisterRequest(
         registerRequest("gameId").as[String],
         registerRequest("pseudo").as[String],

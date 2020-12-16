@@ -9,9 +9,9 @@ abstract class Player(
                        var alibiCards: ListBuffer[AlibiCard] = new ListBuffer[AlibiCard]
                      ) {
 
-  var isAI: Boolean = false
+  var aiBrain : Option[AIPlayer] = None
 
-  var aiBrain : AIPlayer = _
+  def getAIName: String = if (aiBrain.isEmpty) "NoAI" else aiBrain.get.getClass.toString
 
   var turnTokens: ListBuffer[TurnToken] = new ListBuffer[TurnToken]
 

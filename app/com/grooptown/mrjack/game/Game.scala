@@ -96,8 +96,8 @@ case class Game(
                        isMrJack: Boolean): String = {
     val uuid = registerPlayer("AI_" + isMrJack + "_" + aiLevel, isMrJack)
     val aiPlayer = buildNewPlayer(aiLevel, isMrJack)
-    if (isMrJack) mrJackPlayer.aiBrain = aiPlayer
-    if (!isMrJack) detectivePlayer.aiBrain = aiPlayer
+    if (isMrJack) mrJackPlayer.aiBrain = Option.apply(aiPlayer)
+    if (!isMrJack) detectivePlayer.aiBrain = Option.apply(aiPlayer)
     aiPlayer.launchAI(this)
     uuid
   }
@@ -151,11 +151,13 @@ case class Game(
     playAction(askActionFromUserKeyboard)
   }
 
+  /*
   def playAIIfNecessary(): Unit = {
     if (winner.isEmpty) return
     if (isDetectiveCurrentPlayer && detectivePlayer.isAI) detectivePlayer.aiBrain.getNextMove(this)
     if (!isDetectiveCurrentPlayer && mrJackPlayer.isAI) mrJackPlayer.aiBrain.getNextMove(this)
   }
+  */
 
   def playAction(action: ActionDetails, shouldHandleEndOfTurn: Boolean = true): Unit = {
     addActionPlayedToHistory(action)
@@ -197,13 +199,13 @@ case class Game(
     if (isMrJackVisible) {
       detectivePlayer.turnTokens += turnTokens.remove(0)
       val nonVisibleDistricts = board.getNonVisibleDistrictsFromVisibleCells(visibleCells)
+      val notMrJack = nonVisibleDistricts.filter(_.isRecto).map(_.name.toString).toArray
       nonVisibleDistricts.foreach(_.reverseDistrict())
-      val notMrJack = nonVisibleDistricts.map(d => d.name.toString).toArray
       addMessageToHistory("They are not MrJack : " + notMrJack.mkString("(", ", ", ")"))
     } else {
       mrJackPlayer.turnTokens += turnTokens.remove(0)
+      val notMrJack = visibleCells.filter(_.district.get.isRecto).map(_.district.get.name.toString)
       visibleCells.foreach(_.district.get.reverseDistrict())
-      val notMrJack = visibleCells.map(c => c.district.get.name.toString)
       addMessageToHistory("They are not MrJack : " + notMrJack.mkString("(", ", ", ")"))
     }
   }

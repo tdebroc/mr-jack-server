@@ -57,7 +57,6 @@ export class DataServiceService {
 
         this.currentGame = data;
         this.currentGameId = gameId;
-        console.log(this.currentGameId, gameId)
         this.refreshSecrets(gameId)
         console.log("Current Game is ", this.currentGame)
         if (callback) callback()
