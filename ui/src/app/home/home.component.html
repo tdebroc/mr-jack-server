@@ -1,9 +1,9 @@
 <div id="all-page">
   <mat-card *ngIf="getGames()" id="game-list">
     <a href="assets/pdf/MrJackPocket.pdf" target="_blank">
-      <button mat-raised-button color="primary">📖 Check Rules Game</button>
+      <button mat-raised-button color="primary">📖 Rules</button>
     </a>
-
+    &nbsp;
     <button mat-raised-button color="primary" (click)="createGame()">▶ Create Game</button>
     <div class="game-list">
       <mat-card *ngFor="let gameId of getGames()" (click)="selectGame(gameId)" class="pointer game-item"
@@ -85,7 +85,7 @@
       </button>
     </h2>
     <div *ngIf="!isGameStarted()">
-      You can register here, by clicking on the player you want to play:<br/>
+      Which player do you want to play ?<br/>
       <img src="assets/images/players/detectives.png" class="player-register pointer"
            *ngIf="!getCurrentGame().detectiveRegistered"
            (click)="registerPlayer(false)"
@@ -94,22 +94,27 @@
            *ngIf="!getCurrentGame().mrJackRegistered"
            (click)="registerPlayer(true)"
            alt="mrJack">
-      <button mat-raised-button color="primary"
-              *ngIf="!getCurrentGame().detectiveRegistered"
-              (click)="registerAIPlayer('0', false)">Detective as stupid AI Random
-      </button>
-      <button mat-raised-button color="primary"
-              *ngIf="!getCurrentGame().mrJackRegistered"
-              (click)="registerAIPlayer('0', true)">MrJack as stupid AI Random
-      </button>
-      <button mat-raised-button color="primary"
-              *ngIf="!getCurrentGame().detectiveRegistered"
-              (click)="registerAIPlayer('1', false)">Detective as smarter AI
-      </button>
-      <button mat-raised-button color="primary"
-              *ngIf="!getCurrentGame().mrJackRegistered"
-              (click)="registerAIPlayer('1', true)">MrJack as smarter AI
-      </button>
+      <br/>
+      You can also play against the AI:<br/>
+      <img src="assets/images/players/detectives_AI.png" class="player-register pointer"
+           *ngIf="!getCurrentGame().detectiveRegistered"
+           (click)="registerAIPlayer('1', false)"
+           alt="detectives">
+      <img src="assets/images/players/mrjack_AI.png" class="player-register pointer"
+           *ngIf="!getCurrentGame().mrJackRegistered"
+           (click)="registerAIPlayer('1', true)"
+           alt="mrJack">
+      <br/>
+      Or the moves can be pick-up randomly for an easy win ;-)<br/>
+      <img src="assets/images/players/detectives_AI_random.png" class="player-register pointer"
+           *ngIf="!getCurrentGame().detectiveRegistered"
+           (click)="registerAIPlayer('0', false)"
+           alt="detectives">
+      <img src="assets/images/players/mrjack_AI_random.png" class="player-register pointer"
+           *ngIf="!getCurrentGame().mrJackRegistered"
+           (click)="registerAIPlayer('0', true)"
+           alt="mrJack">
+
     </div>
     <fieldset class="current-player-panel" *ngIf="amIMrJack() || amIDetective()">
       Your are:<br>
