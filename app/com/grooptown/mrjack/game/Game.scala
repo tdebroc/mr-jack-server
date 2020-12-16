@@ -204,12 +204,12 @@ case class Game(
     if (isMrJackVisible) {
       detectivePlayer.turnTokens += turnTokens.remove(0)
       val nonVisibleDistricts = board.getNonVisibleDistrictsFromVisibleCells(visibleCells)
-      val notMrJack = nonVisibleDistricts.filter(_.isRecto).map(_.name.toString).toArray
+      val notMrJack = nonVisibleDistricts.filter(_.isRecto).map(_.name.toString).toSet
       nonVisibleDistricts.foreach(_.reverseDistrict())
       addMessageToHistory("They are not MrJack : " + notMrJack.mkString("(", ", ", ")"))
     } else {
       mrJackPlayer.turnTokens += turnTokens.remove(0)
-      val notMrJack = visibleCells.filter(_.district.get.isRecto).map(_.district.get.name.toString)
+      val notMrJack = visibleCells.filter(_.district.get.isRecto).map(_.district.get.name.toString).toSet
       visibleCells.foreach(_.district.get.reverseDistrict())
       addMessageToHistory("They are not MrJack : " + notMrJack.mkString("(", ", ", ")"))
     }

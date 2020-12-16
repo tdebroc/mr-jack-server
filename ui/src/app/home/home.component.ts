@@ -433,7 +433,7 @@ export class HomeComponent implements OnInit {
   }
 
   isAtLastHistory() {
-    return this.dataService.currentGame && this.historyIndex === this.dataService.currentGame.games.length - 1
+    return this.dataService.currentGame && this.historyIndex === this.dataService.currentGame.games.length
       || typeof this.historyIndex === "undefined"
   }
   isAtFirstHistory() {
