@@ -442,7 +442,7 @@ export class HomeComponent implements OnInit {
 
   upInHistory() {
     this.initIfNeeded()
-    if (!this.dataService.currentGame) {
+    if (!this.dataService.currentGame || typeof this.historyIndex === "undefined") {
       return;
     }
     if (!this.isAtLastHistory()) {
@@ -455,7 +455,7 @@ export class HomeComponent implements OnInit {
 
   backInHistory() {
     this.initIfNeeded()
-    if (!this.isAtFirstHistory()) {
+    if (!this.isAtFirstHistory() && typeof this.historyIndex !== "undefined") {
       this.historyIndex--;
     }
   }
