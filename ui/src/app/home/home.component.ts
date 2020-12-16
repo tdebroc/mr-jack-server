@@ -122,8 +122,8 @@ export class HomeComponent implements OnInit {
     setTimeout(this.refreshUI.bind(this), 1500)
   }
 
-  isCurrentGameId(game: any) {
-    return this.dataService.currentGameId && game.key === this.getCurrentGameId()
+  isCurrentGameId(gameId: any) {
+    return this.dataService.currentGameId && gameId === this.getCurrentGameId()
   }
 
   getDistrictImageName(district: District) {
@@ -165,7 +165,7 @@ export class HomeComponent implements OnInit {
 
   selectFirstGame() {
     this.historyIndex = undefined;
-    let firstKey = Object.keys(this.dataService.getGames())[Object.keys(this.dataService.getGames()).length - 1]
+    let firstKey = this.dataService.getGames()[this.dataService.getGames().length - 1]
     this.selectGame(firstKey)
   }
 

@@ -3,9 +3,9 @@
     <a href="assets/pdf/MrJackPocket.pdf" target="_blank">Check Rules</a><br/>
     <button mat-raised-button color="primary" (click)="createGame()">Create Game</button>
     <div class="game-list">
-      <mat-card *ngFor="let game of getGames() | keyvalue" (click)="selectGame(game.key)" class="pointer game-item"
-                [ngClass]="{'selected' : isCurrentGameId(game)}">
-        {{game.key}}
+      <mat-card *ngFor="let gameId of getGames()" (click)="selectGame(gameId)" class="pointer game-item"
+                [ngClass]="{'selected' : isCurrentGameId(gameId)}">
+        {{gameId}}
       </mat-card>
     </div>
 

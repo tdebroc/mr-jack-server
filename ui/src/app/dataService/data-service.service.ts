@@ -29,6 +29,7 @@ export class DataServiceService {
     this.http.get(this.getUrlPrefix() + '/games')
       .subscribe((data) => {
         this.games = data;
+        this.games.sort().reverse()
         if (callback) callback()
       });
   }
