@@ -116,7 +116,7 @@ class AITesting {
     println("Turn of " + game.getCurrentPlayer.printName)
     val move = aiPlayer.getNextMove(game)
     println(move)
-    // assert(move.startsWith("0"))
+    assert(move.startsWith("0"))
 
   }
 

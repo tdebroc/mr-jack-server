@@ -33,8 +33,9 @@ object PossibilityPlayer {
   def playOneMove(game: Game, move: String): Game = {
     val actionDetails = ActionService.getActionDetails(game, move)
     if (actionDetails.action.getActionName.equals(AlibiCardAction.getActionName)) {
-      actionDetails.actionToken.isUsed = true
       playMostProbableAlibiCard(game)
+      actionDetails.actionToken.isUsed = true
+      game
     } else {
       game.playAction(actionDetails, shouldHandleEndOfTurn = false)
       game
@@ -77,9 +78,6 @@ object PossibilityPlayer {
 
   def handleWitnessCall(game: Game, aiPlayer: AIPlayer): Game = {
     if (aiPlayer.isPlayerMrJack) {
-      if (game == null || game.mrJackPlayer == null || game.mrJackPlayer.alibiCard == null) {
-        println("TEST")
-      }
       game.witnessCall(game.mrJackPlayer.alibiCard.name)
       game
     } else {
