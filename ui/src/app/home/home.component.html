@@ -4,11 +4,11 @@
       <button mat-raised-button color="primary">📖 Rules</button>
     </a>
     &nbsp;
-    <button mat-raised-button color="primary" (click)="createGame()">▶ Create Game</button>
+    <button mat-raised-button color="primary" id="create-game-btn" (click)="createGame()">▶ Create Game</button>
     <div class="game-list">
       <mat-card *ngFor="let gameId of getGames()" (click)="selectGame(gameId)" class="pointer game-item"
                 [ngClass]="{'selected' : isCurrentGameId(gameId)}">
-        {{gameId}}
+        Game_{{gameId}}
       </mat-card>
     </div>
 
@@ -66,7 +66,7 @@
       <div *ngIf="this.isEnded()">
         We have Winner ! And winner is ... {{this.getCurrentGame().winner}}
       </div>
-      <div>
+      <div *ngIf="this.getCurrentGame().history.length > 0">
         History:
         <div *ngFor="let historyLine of this.getCurrentGame().history.slice().reverse()">
           {{historyLine}}
