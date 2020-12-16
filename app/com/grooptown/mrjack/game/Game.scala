@@ -26,6 +26,8 @@ case class Game(
                  history: mutable.ListBuffer[String] = new mutable.ListBuffer[String]
                ) {
 
+  val games = new mutable.ListBuffer[Game]
+
   def initGame(): Unit = {
     mrJackPlayer.alibiCard = pickAlibiCard()
     initTurn()
@@ -81,6 +83,8 @@ case class Game(
   def getWinner: String = if (winner.isDefined) winner.get.printName else null
 
   def getHistory: Array[String] = history.toArray
+
+  def getGames: Array[Game] = games.toArray
 
   // ===================================================================================================
   // = Multiplayer
@@ -160,8 +164,9 @@ case class Game(
   */
 
   def playAction(action: ActionDetails, shouldHandleEndOfTurn: Boolean = true): Unit = {
+    games += Game.clone(game = this)
     addActionPlayedToHistory(action)
-    action.action.playAction(action.actionInput, this)
+    action.action.playAction(action.actionInput, game = this)
     action.actionToken.isUsed = true
     if (shouldHandleEndOfTurn) handleEndOfTurn()
   }
