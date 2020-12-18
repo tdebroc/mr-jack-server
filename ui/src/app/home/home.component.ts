@@ -428,7 +428,7 @@ export class HomeComponent implements OnInit {
 
   initIfNeeded() {
     if (typeof this.historyIndex === "undefined" && this.dataService.currentGame) {
-      this.historyIndex = this.dataService.currentGame.games.length - 1
+      this.historyIndex = this.dataService.currentGame.games.length
     }
   }
 
