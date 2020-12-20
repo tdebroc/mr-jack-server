@@ -36,5 +36,5 @@ export class Game {
   mrJackRegistered: boolean = false;
   history: String[] = [];
   games: Game[] = [];
-  secrets: Record<string, PlayerSecret>;
+  secrets: Record<string, PlayerSecret> = {};
 }
