@@ -44,17 +44,10 @@ export class DataServiceService {
   }
 
   refreshCurrentGame(gameId: string,
-                     callback: undefined | (() => void) = undefined,
-                     shouldSendNotification = false) {
+                     callback: undefined | (() => void) = undefined) {
     this.http.get(this.getUrlPrefix() + '/game/' + gameId)
       .subscribe((data: any) => {
         if (this.areEquals(this.currentGame, data) && gameId === this.currentGameId) return;
-        Notification.requestPermission(function () {
-        }).then(() => {
-          if (shouldSendNotification) {
-            new Notification("Game changed !", {body: "User has played !"});
-          }
-        })
 
         this.currentGame = data;
         this.currentGameId = gameId;
@@ -156,7 +149,6 @@ export class DataServiceService {
       .filter(key => key.startsWith(gameId))
       .map(key => this.currentPlayers[key])
   }
-
 
 
 }

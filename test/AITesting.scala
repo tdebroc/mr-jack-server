@@ -3,9 +3,13 @@ import com.grooptown.mrjack.ai.level1.SmartAI
 import com.grooptown.mrjack.board.DetectiveName.{SHERLOCK, TOBBY, WATSON}
 import com.grooptown.mrjack.board.DetectiveToken
 import com.grooptown.mrjack.board.Orientation.{EAST, NORTH, SOUTH, WEST}
-import com.grooptown.mrjack.game.{Game, TurnToken}
+import com.grooptown.mrjack.game.Game
 import com.grooptown.mrjack.players.{AlibiCard, AlibiName}
 import org.junit.Test
+
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+import java.util.Date
 
 
 class AITesting {
@@ -177,11 +181,14 @@ class AITesting {
     game.turnTokens.remove(0)
     val aiPlayer = SmartAI(true)
     println("Turn of " + game.getCurrentPlayer.printName)
+    val startTime = getCurrentMicroSec
     val move = aiPlayer.getNextMove(game)
+    println("Time taken: " + (getCurrentMicroSec - startTime))
     println(move)
     // assert(move.startsWith("0"))
   }
 
+  def getCurrentMicroSec: Long = Instant.now().truncatedTo(ChronoUnit.MICROS).toEpochMilli
 
   @Test def aiTestShouldNotBlock(): Unit = {
     val game: Game = Game.buildNewGame
@@ -244,7 +251,9 @@ class AITesting {
     val aiPlayer = SmartAI(false)
     println("Turn number " + game.getTurnNumber)
     println("Turn of " + game.getCurrentPlayer.printName)
+    val startTime = (new Date).getTime
     val move = aiPlayer.getNextMove(game)
+    println("Time taken: " + ((new Date).getTime - startTime))
     game.playAction(ActionService.getActionDetails(game, move))
     println(move)
     // assert(move.startsWith("0"))

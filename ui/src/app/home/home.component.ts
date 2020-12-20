@@ -38,8 +38,6 @@ export class HomeComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe(params => {
       this.mode = params['mode'];
     });
-    Notification.requestPermission(function () {
-    }).then(() => console.log("Notification Permission granted."))
   }
 
   ngOnInit() {
@@ -117,7 +115,7 @@ export class HomeComponent implements OnInit {
 
   refreshUI() {
     if (this.isCurrentGameDefined()) {
-      this.dataService.refreshCurrentGame(this.getCurrentGameId(), undefined, true)
+      this.dataService.refreshCurrentGame(this.getCurrentGameId(), undefined)
     }
     setTimeout(this.refreshUI.bind(this), 1500)
   }
@@ -403,7 +401,7 @@ export class HomeComponent implements OnInit {
   }
 
   getHourGlassesMissing() {
-    return this.arrayOne( Math.max(0, 6 - this.countMrJackHourGlasses()))
+    return this.arrayOne(Math.max(0, 6 - this.countMrJackHourGlasses()))
   }
 
   arrayOne(n: number | undefined): any[] {
@@ -425,7 +423,7 @@ export class HomeComponent implements OnInit {
   // = History
   // ===================================================================================================
 
-  historyIndex: undefined|number = undefined
+  historyIndex: undefined | number = undefined
 
   initIfNeeded() {
     if (typeof this.historyIndex === "undefined" && this.dataService.currentGame) {
@@ -437,6 +435,7 @@ export class HomeComponent implements OnInit {
     return this.dataService.currentGame && this.historyIndex === this.dataService.currentGame.games.length
       || typeof this.historyIndex === "undefined"
   }
+
   isAtFirstHistory() {
     return this.historyIndex === 0
   }
@@ -476,7 +475,7 @@ export class HomeComponent implements OnInit {
   getMrJackSecret() {
     if (this.amIMrJack() && this.getSecret('true')) {
       return this.getSecret('true');
-    } else if (!this.amIMrJack() && this.isGameFinished()){
+    } else if (!this.amIMrJack() && this.isGameFinished()) {
       return this.getMrJackSecretFromEndGame();
     } else {
       return undefined;

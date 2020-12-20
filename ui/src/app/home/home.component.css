@@ -3,21 +3,23 @@
   table-layout: fixed;
 }
 #game-list {
-  display: table-cell;
-  width: 20%;
+  position: absolute;
+  width: 18%;
 }
 
 #game-list .game-item {
   margin-top: 5px;
 }
 #current-game {
+  position: absolute;
+  margin-left: 20%;
   width: 50%;
-  display: table-cell;
   padding: 10px;
 }
 #actions-panel {
   width: 30%;
-  display: table-cell;
+  position: absolute;
+  margin-left: 70%;
 }
 #board {
   display: table;

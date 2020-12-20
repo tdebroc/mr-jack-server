@@ -74,7 +74,7 @@
       </div>
     </div>
   </div>
-  <div *ngIf="isCurrentGameDefined()">
+  <div *ngIf="isCurrentGameDefined()" id="actions-panel">
     <h2>
       Turn: {{ getCurrentGame().turnNumber}}
       <button mat-raised-button color="primary" (click)="backInHistory()"
@@ -152,7 +152,7 @@
     <fieldset class="players-panel" *ngIf="isGameStarted()">
       <fieldset id="mrJack-panel">
         MrJack has {{countMrJackHourGlasses()}} hourGlasses
-        <span *ngIf="!amIMrJack()">and maybe more with alibi Cards</span>
+        <span *ngIf="!getMrJackSecret()">and maybe more with alibi Cards</span>
         <div>
           <img *ngFor="let h of getHourGlasses()"
                class="mrjack-hourglass"

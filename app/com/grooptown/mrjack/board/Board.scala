@@ -64,7 +64,7 @@ case class Board(cells: Array[Array[Cell]]) {
   def calculateVisibleCellsFromAllDetective: Array[Cell] = {
     detectivePositions
       .filter(pos => cells(pos.line)(pos.col).detectives.get.nonEmpty)
-      .flatMap(getVisibleCellsFromOneDetective)
+      .flatMap(getVisibleCellsFromOneDetectiveNotBlockedByWall)
   }
 
   def getNonVisibleDistrictsFromVisibleCells(visibleCells: Array[Cell]): ListBuffer[District] = {
@@ -72,7 +72,11 @@ case class Board(cells: Array[Array[Cell]]) {
     this.getDistricts.filter(district => visibleAlibis.count(alibi => alibi == district.name) == 0)
   }
 
-  def getVisibleCellsFromOneDetective(pos: Position): ListBuffer[Cell] = {
+  def getVisibleCellsFromOneDetectiveNotBlockedByWall(pos: Position): ListBuffer[Cell] = {
+    getVisibleCellsFromOneDetective(pos)
+  }
+
+  def getVisibleCellsFromOneDetective(pos: Position, blockedByWall: Boolean = true): ListBuffer[Cell] = {
     val movement = positionToMovement(pos)
     val visibleCells = new ListBuffer[Cell]
     var checked = 0
@@ -81,12 +85,16 @@ case class Board(cells: Array[Array[Cell]]) {
       do {
         val nextPos = getNextPosition(currentPos, movement.direction)
         val nextCell = cells(nextPos.line)(nextPos.col)
-        if (!nextCell.district.get.isCross && nextCell.district.get.orientation == movement.orientationToEnterCell) {
+        if (!nextCell.district.get.isCross
+          && nextCell.district.get.orientation == movement.orientationToEnterCell
+          && blockedByWall) {
           break
         }
         visibleCells += nextCell
         checked = checked + 1
-        if (!nextCell.district.get.isCross && nextCell.district.get.orientation == movement.orientationToExitCell) {
+        if (!nextCell.district.get.isCross
+          && nextCell.district.get.orientation == movement.orientationToExitCell
+          && blockedByWall) {
           break
         }
         currentPos = nextPos
@@ -131,6 +139,7 @@ object Board {
   def districtIdToPosition(districtId: Int): Position = {
     Position(1 + districtId / 3, 1 + districtId % 3)
   }
+
   def buildBoard(): Board = {
     val cells = initCells()
     new Board(
