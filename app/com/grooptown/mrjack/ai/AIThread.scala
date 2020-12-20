@@ -10,7 +10,7 @@ class AIThread(aiPlayer: AIPlayer, game: Game) extends Runnable {
     var gameOn = true
     val startTime = (new Date).getTime
     while (gameOn) {
-      if (game.findWinner().nonEmpty) {
+      if (game.winner.nonEmpty) {
         gameOn = false
       } else if (shouldAIPlay()) {
         aiPlayer.playMove(game)

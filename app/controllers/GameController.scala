@@ -29,7 +29,7 @@ class GameController @Inject()(cc: ControllerComponents) extends AbstractControl
   def getGames: mvc.Result = ok(stringify(games.keySet()))
 
   def cloneGame(gameId: String): mvc.Result = {
-    if (!games.containsKey(gameId)) NotFound("Game is not found : " + gameId)
+    if (!games.containsKey(gameId)) NotFound("Game is not found: " + gameId)
     ok(stringify(GameService.cloneGame(gameId)))
   }
 

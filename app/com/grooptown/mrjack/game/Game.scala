@@ -155,14 +155,6 @@ case class Game(
     playAction(askActionFromUserKeyboard)
   }
 
-  /*
-  def playAIIfNecessary(): Unit = {
-    if (winner.isEmpty) return
-    if (isDetectiveCurrentPlayer && detectivePlayer.isAI) detectivePlayer.aiBrain.getNextMove(this)
-    if (!isDetectiveCurrentPlayer && mrJackPlayer.isAI) mrJackPlayer.aiBrain.getNextMove(this)
-  }
-  */
-
   def playAction(action: ActionDetails, shouldHandleEndOfTurn: Boolean = true): Unit = {
     games += Game.clone(game = this)
     addActionPlayedToHistory(action)
