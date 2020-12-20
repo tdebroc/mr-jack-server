@@ -163,18 +163,18 @@
                src="assets/images/icons/hourglass.png"
                alt="hourglass"/>
         </div>
-        <div *ngIf="amIMrJack() && getSecret('true')">
+        <div *ngIf="getMrJackIdentity()">
           Mr Jack Identity is:<br/>
-          <img class="alibi-card" alt="{{getSecret('true').mrJackIdentity}}}}"
-               src="assets/images/cards/{{getSecret('true').mrJackIdentity}}.png">
+          <img class="alibi-card" alt="{{getMrJackIdentity()}}}}"
+               src="assets/images/cards/{{getMrJackIdentity()}}.png">
           <br/>
         </div>
         <div>
           Mr Jack has {{getCurrentGame().mrJack.alibiCardsCount}} alibi cards
         </div>
-        <div *ngIf="amIMrJack() && getSecret('true')">
+        <div *ngIf="getMrJackSecret()">
           <img class="alibi-card" alt="{{alibiCard.name}}"
-               *ngFor="let alibiCard of getSecret('true').alibiCards"
+               *ngFor="let alibiCard of getMrJackAlibisCards()"
                src="assets/images/cards/{{alibiCard.name}}.png">
         </div>
       </fieldset>

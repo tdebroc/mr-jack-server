@@ -1,3 +1,4 @@
+import {PlayerSecret} from "./PlayerSecret";
 
 
 class Board {
@@ -35,4 +36,5 @@ export class Game {
   mrJackRegistered: boolean = false;
   history: String[] = [];
   games: Game[] = [];
+  secrets: Record<string, PlayerSecret>;
 }

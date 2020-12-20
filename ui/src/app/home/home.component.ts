@@ -413,8 +413,9 @@ export class HomeComponent implements OnInit {
 
   countMrJackHourGlasses() {
     let countHourGlass = 0;
-    if (this.getSecret('true') && this.getSecret('true').alibiCards.length > 0) {
-      countHourGlass += this.getSecret('true').alibiCards.map(a => a.hourGlass).reduce((a, b) => a + b)
+    let mrJackAlibiCards = this.getMrJackAlibisCards();
+    if (mrJackAlibiCards && mrJackAlibiCards.length > 0) {
+      countHourGlass += mrJackAlibiCards.map(a => a.hourGlass).reduce((a, b) => a + b)
     }
     return this.getCurrentGame().mrJack.turnTokenCount + countHourGlass
   }
@@ -462,6 +463,34 @@ export class HomeComponent implements OnInit {
 
   shouldDisplayBackHistory() {
     return this.historyIndex !== 0 && this.dataService.currentGame && this.dataService.currentGame.games.length !== 0
+  }
+
+  isGameFinished() {
+    return this.getCurrentGame().winner;
+  }
+
+  getMrJackSecretFromEndGame() {
+    return Object.values(this.getCurrentGame().secrets).filter(secret => secret.mrJack)[0]
+  }
+
+  getMrJackSecret() {
+    if (this.amIMrJack() && this.getSecret('true')) {
+      return this.getSecret('true');
+    } else if (!this.amIMrJack() && this.isGameFinished()){
+      return this.getMrJackSecretFromEndGame();
+    } else {
+      return undefined;
+    }
+  }
+
+  getMrJackIdentity() {
+    let mrJackSecret = this.getMrJackSecret()
+    return mrJackSecret ? mrJackSecret.mrJackIdentity : undefined;
+  }
+
+  getMrJackAlibisCards() {
+    let mrJackSecret = this.getMrJackSecret()
+    return mrJackSecret ? mrJackSecret.alibiCards : [];
   }
 }
 

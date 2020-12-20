@@ -86,6 +86,8 @@ case class Game(
 
   def getGames: Array[Game] = games.toArray
 
+  def getSecrets: util.Map[String, PlayerSecret] = if (winner.nonEmpty) secrets else null
+
   // ===================================================================================================
   // = Multiplayer
   // ===================================================================================================
