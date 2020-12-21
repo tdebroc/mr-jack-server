@@ -6,14 +6,13 @@ import com.grooptown.mrjack.game.{Game, TurnToken}
 import scala.collection.mutable.ListBuffer
 
 abstract class Player(
-                       var alibiCards: ListBuffer[AlibiCard] = new ListBuffer[AlibiCard]
+                       var alibiCards: ListBuffer[AlibiCard] = new ListBuffer[AlibiCard],
+                       var turnTokens: ListBuffer[TurnToken] = new ListBuffer[TurnToken]
                      ) {
 
   var aiBrain : Option[AIPlayer] = None
 
   def getAIName: String = if (aiBrain.isEmpty) "NoAI" else aiBrain.get.getClass.toString
-
-  var turnTokens: ListBuffer[TurnToken] = new ListBuffer[TurnToken]
 
   def getTurnTokenCount: Int = turnTokens.length
 

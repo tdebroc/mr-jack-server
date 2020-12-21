@@ -23,7 +23,8 @@ case class Game(
                  mrJackPlayer: MrJackPlayer = MrJackPlayer(),
                  var winner: Option[Player] = Option.empty,
                  secrets: util.Map[String, PlayerSecret] = new util.HashMap[String, PlayerSecret],
-                 history: mutable.ListBuffer[String] = new mutable.ListBuffer[String]
+                 history: mutable.ListBuffer[String] = new mutable.ListBuffer[String],
+                 gameId: String
                ) {
 
   val games = new mutable.ListBuffer[Game]
@@ -214,7 +215,9 @@ case class Game(
   // ===================================================================================================
 
   def findWinner(): Option[Player] = {
+    println("Looking for winner")
     if (timeEnded() && !checkIfMrJackVisible) return Option.apply(mrJackPlayer)
+    if (timeEnded() && checkIfMrJackVisible && !detectiveHasReachObjectives) return Option.apply(mrJackPlayer)
     if (haveBothObjective && checkIfMrJackVisible) return Option.apply(detectivePlayer)
     if (haveBothObjective) {
       addMessageToHistory("Both have reach their objectives, we are in Chase Mode ! MrJack must stay unseen until Turn 8 to win.")
@@ -245,11 +248,16 @@ case class Game(
 object Game {
   val MAX_TURN: Int = 8
 
-  def buildNewGame: Game = {
+  def buildNewGame(): Game = {
+    buildNewGame((new Date).getTime.toString)
+  }
+
+  def buildNewGame(gameId: String): Game = {
     new Game(
       alibiCards = initAlibiCards(),
       turnTokens = initTurnTokens(),
-      actionTokens = initActionsToken()
+      actionTokens = initActionsToken(),
+      gameId = gameId
     )
   }
 

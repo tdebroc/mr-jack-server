@@ -11,4 +11,6 @@ case class PlayerSecret(
 
   def getAlibiCards: Array[AlibiCard] = if (isMrJack) game.mrJackPlayer.alibiCards.toArray else
     game.detectivePlayer.alibiCards.toArray
+
+  override def toString: String = getMrJackIdentity + " " + getAlibiCards.length
 }

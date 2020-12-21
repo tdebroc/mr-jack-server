@@ -10,7 +10,7 @@ import org.junit.Test
 class CloneTesting {
 
   @Test def cloneTest(): Unit = {
-    val game: Game = Game.buildNewGame
+    val game: Game = Game.buildNewGame()
     game.initGame()
     game.board.cells(1)(1).district.get.orientation = WEST
     game.board.cells(1)(1).district.get.isRecto = false
@@ -34,11 +34,17 @@ class CloneTesting {
     val mrJack = game.board.cells(3)(1).district.get.name
     println("MrJack " + AlibiName.toChar(mrJack))
 
+    game.mrJackPlayer.turnTokens += game.turnTokens.remove(0)
+    game.mrJackPlayer.turnTokens += game.turnTokens.remove(0)
+    game.mrJackPlayer.turnTokens += game.turnTokens.remove(0)
+    game.mrJackPlayer.turnTokens += game.turnTokens.remove(0)
+
     game.actionTokens.head.isUsed = true
     val gameCloned = Game.clone(game)
     assert(gameCloned.actionTokens.head.isUsed)
     assert(!gameCloned.board.cells(1)(1).district.get.isRecto)
     assert(!gameCloned.board.cells(1)(2).district.get.isRecto)
+    assert(gameCloned.mrJackPlayer.turnTokens.length == game.mrJackPlayer.turnTokens.length)
 
   }
 

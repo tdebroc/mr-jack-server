@@ -27,12 +27,19 @@ object GameEvaluator {
       score -= (game.mrJackPlayer.countHourGlass() * 1.3 * SECOND_FACTOR).toInt
     }
     score += 1000 * countOpenAngles(game)
+    score += 100 * countAlmostOpenAngles(game)
     score
   }
 
   def countOpenAngles(game: Game): Int = {
     Board.detectivePositions.count(pos => {
       game.board.getVisibleCellsFromOneDetective(pos).count(_.district.get.isRecto) > 0
+    })
+  }
+
+  def countAlmostOpenAngles(game: Game): Int = {
+    Board.detectivePositions.count(pos => {
+      game.board.getVisibleCellsFromOneDetectiveNotBlockedByWall(pos).count(_.district.get.isRecto) > 0
     })
   }
 

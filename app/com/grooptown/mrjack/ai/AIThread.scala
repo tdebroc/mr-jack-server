@@ -19,6 +19,8 @@ class AIThread(aiPlayer: AIPlayer, game: Game) extends Runnable {
       }
       Thread.sleep(1000)
     }
+    println("AI ended for Game " + game.gameId + " game winner is " + game.winner + " and time : "
+        + (startTime + 60 * 60 * 1000 * 3 < (new Date).getTime) + " ")
   }
 
   def shouldAIPlay(): Boolean = {

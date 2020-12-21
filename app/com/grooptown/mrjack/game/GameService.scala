@@ -10,7 +10,7 @@ object GameService {
 
   def addGame(): String = {
     val uuid = getNewGameId
-    games.put(uuid, Game.buildNewGame)
+    games.put(uuid, Game.buildNewGame(uuid))
     uuid
   }
 
