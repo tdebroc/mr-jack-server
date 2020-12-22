@@ -215,7 +215,6 @@ case class Game(
   // ===================================================================================================
 
   def findWinner(): Option[Player] = {
-    println("Looking for winner")
     if (timeEnded() && !checkIfMrJackVisible) return Option.apply(mrJackPlayer)
     if (timeEnded() && checkIfMrJackVisible && !detectiveHasReachObjectives) return Option.apply(mrJackPlayer)
     if (haveBothObjective && checkIfMrJackVisible) return Option.apply(detectivePlayer)
