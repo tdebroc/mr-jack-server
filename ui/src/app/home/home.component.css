@@ -137,3 +137,16 @@
 #create-game-btn {
   margin-top: 5px;
 }
+
+@media screen and (max-width: 768px) {
+  #game-list {
+    height: 400px;
+  }
+  #game-list, #current-game, #actions-panel {
+    display: block;
+    width: 100%;
+    position: relative;
+    margin-left: 0;
+  }
+
+}
