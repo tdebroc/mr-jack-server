@@ -137,6 +137,12 @@
 #create-game-btn {
   margin-top: 5px;
 }
+.history-not-for-smartphone {
+  display: block;
+}
+.history-for-smartphone {
+  display: none;
+}
 
 @media screen and (max-width: 768px) {
   #game-list {
@@ -147,6 +153,12 @@
     width: 100%;
     position: relative;
     margin-left: 0;
+  }
+  .history-not-for-smartphone {
+    display: none;
+  }
+  .history-for-smartphone {
+    display: block;
   }
 
 }
