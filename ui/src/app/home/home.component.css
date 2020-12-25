@@ -147,6 +147,7 @@
 @media screen and (max-width: 768px) {
   #game-list {
     height: 400px;
+    overflow: scroll;
   }
   #game-list, #current-game, #actions-panel {
     display: block;

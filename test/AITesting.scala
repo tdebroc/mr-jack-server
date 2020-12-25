@@ -394,4 +394,3 @@ class AITesting {
     assert(move.startsWith("0"))
   }
 }
-
