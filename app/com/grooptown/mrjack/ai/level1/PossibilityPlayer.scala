@@ -90,14 +90,14 @@ object PossibilityPlayer {
   def detectiveTryingToGuess(game: Game): AlibiName = {
     // By default, we'll say Jack has succeed to remain hidden.
     // If there is too many visible characters, we take a visible character.
-    val allPossibleAlibis = game.board.getDistricts.map(_.name)
+    val allPossibleAlibis = game.board.getDistricts.filter(_.isRecto).map(_.name)
     val visibleCells = game.board.calculateVisibleCellsFromAllDetective
     val visibleAlibis = visibleCells.map(_.district.get).filter(_.isRecto).map(_.name).toSet
     val weThinkMrJackIsVisible = visibleAlibis.size == allPossibleAlibis.size || visibleAlibis.size * 2 > allPossibleAlibis.size
     if (weThinkMrJackIsVisible) {
       visibleAlibis.head
     } else {
-      game.board.getNonVisibleDistrictsFromVisibleCells(visibleCells).head.name
+      game.board.getNonVisibleDistrictsFromVisibleCells(visibleCells).filter(_.isRecto).head.name
     }
   }
 }
