@@ -24,6 +24,9 @@ object RotateAction extends Action {
     if (game.board.getDistricts(input.districtId).isAlreadyRotated) {
       throw WrongInputException("District has already been rotated")
     }
+    if (game.board.getDistricts(input.districtId).orientation.equals(input.orientation)) {
+      throw WrongInputException("You should rotate the district. Not let it in the same orientation.")
+    }
     true
   }
 
@@ -32,7 +35,7 @@ object RotateAction extends Action {
     val moves = new mutable.ListBuffer[String]()
     0 to 8 foreach (districtId => {
       val district = game.board.getDistricts(districtId)
-      Orientation.values.map(_.toString).foreach(orientation => {
+      Orientation.values.foreach(orientation => {
         if (!district.isAlreadyRotated && !district.orientation.equals(orientation)) {
           moves += districtId + "-" + orientation
         }
