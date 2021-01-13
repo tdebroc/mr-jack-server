@@ -42,7 +42,10 @@ class CloneTesting {
     game.actionTokens.head.isUsed = true
     val gameCloned = Game.clone(game)
     assert(gameCloned.actionTokens.head.isUsed)
+    // Here we change the value of game object, and it shouldn't affect gameCloned.
+    game.board.cells(1)(1).district.get.isRecto = true
     assert(!gameCloned.board.cells(1)(1).district.get.isRecto)
+    game.board.cells(1)(2).district.get.isRecto = true
     assert(!gameCloned.board.cells(1)(2).district.get.isRecto)
     assert(gameCloned.mrJackPlayer.turnTokens.length == game.mrJackPlayer.turnTokens.length)
 
